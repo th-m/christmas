@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Things } from './things.component'
+import * as fire from '../firebase';
 
-export const WishList = (props) => {
-    const { setThing, addThing, thing, things, user } = props;
+export const WishList = ({ user, family }) => {
+    const [thing, setThing] = useState("");
+    const addThing = () => {
+        fire.push(`/families/${family}/${user}/things`, thing);
+        setThing("")
+    }
+
     return (
         <div>
             <div className='column'>
@@ -10,7 +16,7 @@ export const WishList = (props) => {
                     <input placeholder="Type a things" onChange={(e) => setThing(e.target.value)} value={thing} />
                     <button onClick={addThing}> I want this thing! </button>
                 </div>
-                <Things things={things} color="red" editable={true} user={user} />
+                <Things color="red" editable={true} user={user} family={family} />
             </div>
         </div>
     )

@@ -24,16 +24,35 @@ button{
   border-radius: 8px;
   font-size: .8em;
   text-align: center;
-  color:rgb(228, 110, 110);
+  color:rgb(230, 61, 61);
+  text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+select{
+  letter-spacing:.1em;
+  border-radius: 8px;
+  font-size: .8em;
+  text-align: center;
+  color:rgb(230, 61, 61);
+  text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
 }
 
 h1,h2,h3,h4,h5,h6, ul{
   letter-spacing:.1em;
-  color:rgb(110, 228, 135);
+  color:rgb(61, 230, 61);
+  text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
   opacity: .7;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
 .things ul{
@@ -41,11 +60,21 @@ h1,h2,h3,h4,h5,h6, ul{
 }
 
 .things.red ul{
-  color:rgb(228, 110, 110);
+  color:rgb(230, 61, 61);
+  text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
 }
 
 .things.green ul{
-  color:rgb(110, 228, 135);
+  color:rgb(61, 230, 61);
+  text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
 }
 
 .things ul{

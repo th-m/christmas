@@ -8,20 +8,20 @@ function get(path) {
   });
 }
 
-function listen(path){
+function listen(path) {
   return db.ref(path);
 }
 
-function update(path, data){
+function update(path, data) {
   return db.ref(path).set(data);
 }
 
-function push(path, data){
-    db.ref(path).push(data);
+function push(path, data) {
+  db.ref(path).push(data);
 }
 
-function remove(path){
-    db.ref(path).remove();
+function remove(path) {
+  db.ref(path).remove();
 }
 
-export { auth, get, listen, push, update, remove};
+export { auth, db, get, listen, push, update, remove };
