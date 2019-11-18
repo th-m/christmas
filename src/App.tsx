@@ -6,7 +6,7 @@ import { WishList } from './components/wishlist.component';
 
 const App = () => {
   const [user, setUser] = useState("");
-  const [family, setFamily] = useState("");
+  const [family, setFamily] = useState("behunin");
   const [beneficiary, setBeneficiary] = useState('');
 
   const getInfo = () => {
