@@ -1,5 +1,5 @@
 # [START app_yaml]
-runtime: nodejs8
+runtime: nodejs12
 service: christmas
 # [END app_yaml]
 
