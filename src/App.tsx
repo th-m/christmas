@@ -10,7 +10,7 @@ const App = () => {
   const [beneficiary, setBeneficiary] = useState('');
 
   const getInfo = () => {
-    fire.get(`/families/${family}/${user}/has`).then(x => {
+    fire.get(`/families/${family.toLowerCase()}/${user.toLowerCase()}/has`).then(x => {
       setBeneficiary(x)
     })
   }
