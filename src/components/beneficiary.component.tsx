@@ -1,7 +1,11 @@
 import React from 'react';
 import { Things } from './things.component'
-export const Beneficiary = (props) => {
-    const { name, family } = props;
+interface Props {
+    name: string;
+    family: string;
+}
+export const Beneficiary = ({ name, family }: Props) => {
+
     return (
         <div>
             <div className='column'>

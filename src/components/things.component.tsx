@@ -37,7 +37,7 @@ export const Things = (props: Props) => {
 
     return (
         <div className={`things column ${color}`}>
-            {Object.keys(things).map(thing => <ul key={thing} >{things[thing]} <span className={(editable ? "editable" : "")} onClick={remove(thing)}>x</span></ul>)}
+            {Object.keys(things).map(thing => <ul key={thing} >{things[thing]} <span style={{ cursor: 'pointer' }} className={(editable ? "editable" : "")} onClick={remove(thing)}>x</span></ul>)}
         </div>
     )
 }

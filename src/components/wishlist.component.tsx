@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Things } from './things.component'
 import * as fire from '../firebase';
-
-export const WishList = ({ user, family }) => {
+interface Props {
+    user: string;
+    family: string;
+}
+export const WishList = ({ user, family }: Props) => {
     const [thing, setThing] = useState("");
     const addThing = () => {
         fire.push(`/families/${family}/${user}/things`, thing);
