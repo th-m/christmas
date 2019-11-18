@@ -28,7 +28,7 @@ const App = () => {
       {
         user && beneficiary
           ? <div className='split'>
-            <Beneficiary name={beneficiary} />
+            <Beneficiary name={beneficiary} family={family} />
             <div>
 
               <WishList user={user} family={family} />
