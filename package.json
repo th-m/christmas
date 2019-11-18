@@ -4,7 +4,7 @@
   "private": true,
   "Author": "Thom Valadez",
   "engines": {
-    "node": "8.x.x"
+    "node": "10.x.x"
   },
   "dependencies": {
     "@material-ui/core": "^1.4.2",
