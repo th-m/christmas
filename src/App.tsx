@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as fire from './firebase';
 import { Beneficiary } from './components/beneficiary.component';
@@ -6,34 +6,18 @@ import { WishList } from './components/wishlist.component';
 
 const App = () => {
   const [user, setUser] = useState("");
-  const [thing, setThing] = useState("");
+  const [family, setFamily] = useState("");
   const [beneficiary, setBeneficiary] = useState(null);
-  const [things, setThings] = useState({});
-
-  const gotThings = data => {
-    if (!data.val()) {
-      setThings({});
-    } else {
-      setThings(data.val());
-    }
-  }
-
-  const errData = (error) => {
-    console.error("errData", error);
-  }
 
   const getInfo = () => {
-    fire.listen(`/families/valadez/${user}/things`).on("value", gotThings, errData);
-
-    fire.get(`/families/valadez/${user}/has`).then(x => {
+    fire.get(`/families/${family}/${user}/has`).then(x => {
       setBeneficiary(x)
     })
   }
 
-  const addThing = () => {
-    fire.push(`/families/valadez/${user}/things`, thing);
-    setThing("")
-  }
+  useEffect(() => {
+    getInfo()
+  }, [family, user])
 
   return (
     <div className="App">
@@ -45,9 +29,16 @@ const App = () => {
         user && beneficiary
           ? <div className='split'>
             <Beneficiary name={beneficiary} />
-            <WishList {...{ setThing, addThing, thing, things, user }} />
+            <div>
+
+              <WishList user={user} family={family} />
+            </div>
           </div>
           : <div className='row start'>
+            <select onChange={(e) => setFamily(e.target.value)} value={family}>
+              <option value="valadez">Valadez</option>
+              <option value="behunin">Behunin</option>
+            </select>
             <input placeholder="Enter your name" onChange={(e) => setUser(e.target.value)} />
             <button onClick={getInfo}> See beneficiary! </button>
           </div>
