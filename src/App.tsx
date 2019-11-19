@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './App.css';
-import * as fire from './firebase';
+
 import { Beneficiary } from './components/beneficiary.component';
 import { WishList } from './components/wishlist.component';
+import { UserProvider, User } from './store/user.store'
+import { fbSignUp } from './fire';
 
 const App = () => {
   const [user, setUser] = useState("");
   const [family, setFamily] = useState("behunin");
   const [beneficiary, setBeneficiary] = useState('');
-
-  const getInfo = () => {
-    fire.get(`/families/${family.toLowerCase()}/${user.toLowerCase()}/has`).then(x => {
-      setBeneficiary(x)
-    })
-  }
+  const { userState } = useContext(User);
+  // const getInfo = () => {
+  //   fire.get(`/families/${family.toLowerCase()}/${user.toLowerCase()}/has`).then(x => {
+  //     setBeneficiary(x)
+  //   })
+  // }
 
   useEffect(() => {
-    getInfo()
+    // getInfo()
+    console.log('hi');
   }, [family, user])
 
   return (
@@ -24,7 +27,10 @@ const App = () => {
       <h3>
         Secret Santanator Game 3000-v0.2
       </h3>
-
+      {userState.user
+        ? <img alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} style={{ margin: 10 }} />
+        : <button onClick={fbSignUp}> Sign In</button>
+      }
       {
         user && beneficiary
           ? <div className='split'>
@@ -48,7 +54,13 @@ const App = () => {
   );
 }
 
-export default App;
+const WrappedApp = () => (
+  <UserProvider>
+    <App />
+  </UserProvider>
+)
+
+export default WrappedApp;
 
 
 

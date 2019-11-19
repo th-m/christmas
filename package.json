@@ -24,8 +24,7 @@
   "scripts": {
     "deploy": "./deploy.sh",
     "gcloud_deploy": "gcloud app deploy",
-    "start": "node server.js",
-    "dev": "react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

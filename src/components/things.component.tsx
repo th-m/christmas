@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import * as fire from '../firebase';
+import * as fire from '../fire';
 
 interface Props {
     user: string;
@@ -17,8 +17,9 @@ export const Things = (props: Props) => {
     }
 
     const remove = key => () => {
-        if (!user) return false;
-        fire.remove(`/families/${family}/${user}/things/${key}`);
+        console.log('hi');
+        // if (!user) return false;
+        // fire.remove(`/families/${family}/${user}/things/${key}`);
     }
 
     const gotThings = data => {
@@ -29,11 +30,11 @@ export const Things = (props: Props) => {
         }
     }
 
-    useEffect(() => {
-        const listener = fire.listen(`/families/${family}/${user}/things`);
-        listener.on("value", gotThings, errData);
-        return () => listener.off("value", () => console.log('disconnected'))
-    }, [])
+    // useEffect(() => {
+    //     const listener = fire.listen(`/families/${family}/${user}/things`);
+    //     listener.on("value", gotThings, errData);
+    //     return () => listener.off("value", () => console.log('disconnected'))
+    // }, [])
 
     return (
         <div className={`things column ${color}`}>
