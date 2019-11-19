@@ -32,7 +32,7 @@ const App = () => {
         ? <img alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} style={{ margin: 10 }} />
         : <button onClick={fbSignUp}> Sign In</button>
       }
-      {
+      {/* {
         user && beneficiary
           ? <div className='split'>
             <Beneficiary name={beneficiary} family={family} />
@@ -49,7 +49,7 @@ const App = () => {
             <input placeholder="Enter your name" onChange={(e) => setUser(e.target.value)} />
           </div>
 
-      }
+      } */}
 
     </div>
   );
