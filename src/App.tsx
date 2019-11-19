@@ -5,12 +5,13 @@ import { Beneficiary } from './components/beneficiary.component';
 import { WishList } from './components/wishlist.component';
 import { UserProvider, User } from './store/user.store'
 import { fbSignUp } from './fire';
-
+import { useAuth } from './hooks/auth.hook';
 const App = () => {
   const [user, setUser] = useState("");
   const [family, setFamily] = useState("behunin");
   const [beneficiary, setBeneficiary] = useState('');
   const { userState } = useContext(User);
+  useAuth();
   // const getInfo = () => {
   //   fire.get(`/families/${family.toLowerCase()}/${user.toLowerCase()}/has`).then(x => {
   //     setBeneficiary(x)
