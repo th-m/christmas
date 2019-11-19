@@ -33,7 +33,7 @@ const provider = new firebase.auth.FacebookAuthProvider();
 
 const storage = firebase.storage();
 
-export type CB = (querySnapshot: Object) => any;
+export type CB = (querySnapshot: Object | any) => any;
 
 const messaging = firebase.messaging();
 messaging.usePublicVapidKey("BBO_ykHs1baLCNx8XINwHREnwFva6z7R8TNgGRC2UW9dRlzAapHynvpcvAW3PhpL83jS9miMPomtKd9l9dY_cn8");

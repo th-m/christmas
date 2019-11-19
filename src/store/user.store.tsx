@@ -1,10 +1,44 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useState } from 'react';
+import { string } from 'prop-types';
 
 // @ts-ignore
 let User = createContext();
+interface UserState {
+    user: {
+        uid: string;
+        displayName: string;
+        email: string;
+        providerId: string;
+        photoURL: string;
+        phoneNumber: string;
+    }
+}
 
-let initialState = {
-    user: null,
+type DispatchActions = 'logout' | 'login';
+
+export interface UserInterface {
+    userState: UserState;
+    dispatchUser: (params: { type: DispatchActions, payload: any; }) => void;
+}
+
+const test = {
+    displayName: "Thomas Valadez",
+    email: "thomvaladez@gmail.com",
+    phoneNumber: '',
+    photoURL: "https://avatars.io/facebook/2793638373991728",
+    providerId: "facebook",
+    uid: "PKIpniPK6jQEwhrPZ5ueONbsZz72",
+}
+let initialState: UserState = {
+    user: {
+        // uid: '',
+        // displayName: '',
+        // email: '',
+        // providerId: '',
+        // photoURL: '',
+        // phoneNumber: '',
+        ...test,
+    },
 };
 
 // @ts-ignore

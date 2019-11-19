@@ -11,7 +11,13 @@ input, button{
 input{
   letter-spacing:.1em;
   background-color: #eceaea00;
-  color: rgba(228, 110, 110, 0.719);
+  color: white;
+  text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  /* color: rgba(228, 110, 110, 0.719); */
   border-radius: 8px;
   border-style:solid;
   border-color: #eceaea;
@@ -169,3 +175,34 @@ canvas{
 .avatar:hover{
   opacity: .6;
 }
+
+
+.questionnaire .question:nth-child(odd){
+    color:rgb(230, 61, 61);
+    text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  }
+
+.questionnaire{
+  max-width: 600px;
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+}
+.questionnaire .question:nth-child(even){
+  color:rgb(61, 230, 61);
+    text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  }
+
+  .question {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
