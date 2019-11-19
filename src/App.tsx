@@ -29,7 +29,10 @@ const App = () => {
         Secret Santanator Game 3000-v0.2
       </h3>
       {userState.user
-        ? <img alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} style={{ margin: 10 }} />
+        ?
+        <div className="avatar_container">
+          <img className="avatar" alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} style={{ margin: 10 }} />
+        </div>
         : <button onClick={fbSignUp}> Sign In</button>
       }
       {/* {
