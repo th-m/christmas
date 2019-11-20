@@ -26,6 +26,7 @@ export const Questionnaire = () => {
         upsertQuestoinnaire(userState.user.uid, formData, successMessage('updated questions'));
     }
     useEffect(() => {
+        console.log({ userState });
         const vals = getQuestions(userState.user.uid, (vals) => {
             if (vals.questionnaire) {
                 setInitialValues({ ...vals.questionnaire })

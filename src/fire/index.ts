@@ -6,6 +6,7 @@ export const getUser = (uid: string, cb: CB) => {
   db.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
 }
 export const getQuestions = (uid: string, cb: CB) => {
+  if (uid === '' || !uid) { return }
   return db.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
 }
 
@@ -23,6 +24,7 @@ interface Questionnaire {
 }
 
 export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
+  if (uid === '' || !uid) return;
   db.collection('users').doc(uid).set({ questionnaire: data }, { merge: true })
     .then(() => {
       cb('success');

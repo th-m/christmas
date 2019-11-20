@@ -35,17 +35,17 @@ const storage = firebase.storage();
 
 export type CB = (querySnapshot: Object | any) => any;
 
-const messaging = firebase.messaging();
-messaging.usePublicVapidKey("BBO_ykHs1baLCNx8XINwHREnwFva6z7R8TNgGRC2UW9dRlzAapHynvpcvAW3PhpL83jS9miMPomtKd9l9dY_cn8");
-messaging.requestPermission()
-    .then(() => {
-        console.log('permission granted');
-        return messaging.getToken();
-    }).then(token => {
-        console.log({ token }) // associate this token with user
-    }).catch(() => {
-        console.log('permission denied');
-    })
+// const messaging = firebase.messaging();
+// messaging.usePublicVapidKey("BBO_ykHs1baLCNx8XINwHREnwFva6z7R8TNgGRC2UW9dRlzAapHynvpcvAW3PhpL83jS9miMPomtKd9l9dY_cn8");
+// messaging.requestPermission()
+//     .then(() => {
+//         console.log('permission granted');
+//         return messaging.getToken();
+//     }).then(token => {
+//         console.log({ token }) // associate this token with user
+//     }).catch(() => {
+//         console.log('permission denied');
+//     })
 
 export { auth, db, firebase, provider, storage };
 

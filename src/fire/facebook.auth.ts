@@ -4,7 +4,7 @@ import { auth, db, firebase } from '.'
 import { mobilecheck } from '../utils';
 
 const provider = new firebase.auth.FacebookAuthProvider();
-const handleSignin = (result) => {
+export const handleSignin = (result) => {
     // @ts-ignore
     const { uid, displayName, email, phoneNumber, providerData } = result.user;
 

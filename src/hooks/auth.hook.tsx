@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { getUser, db, firebase } from '../fire'
 import { User, UserInterface } from "../store/user.store";
+import { handleSignin } from "../fire/facebook.auth";
 export const useAuth = () => {
     const { userState, dispatchUser } = useContext<UserInterface>(User);
 
@@ -14,30 +15,23 @@ export const useAuth = () => {
 
     useEffect(() => {
         // Handle active user
-        firebase.auth().onAuthStateChanged(function (user) {
-            console.log(user);
-            if (user && userState.user.uid === '') {
-                getUser(user.uid, handleUserLogin)
-            } else if (!user && userState.user) {
+        firebase.auth().onAuthStateChanged(function (result) {
+            console.log(result);
+            if (result && userState.user.uid === '') {
+                handleSignin({ user: result });
+                getUser(result.uid, handleUserLogin)
+            } else if (!result && userState.user) {
                 handleUserLogout()
             }
         });
 
-        // // Handle oauth redirect for mobile
-        // firebase.auth().getRedirectResult().then(function (result) {
-        //     // @ts-ignore
-        //     const { uid, displayName, email, phoneNumber, providerData } = result.user;
-        //     const coll = { uid, displayName, email, providerId: 'facebook', photoURL: `https://avatars.io/facebook/${providerData[0].uid}`, phoneNumber };
-        //     db.collection("users").doc(uid).set(coll)
-        //         .then(function () {
-        //             console.log("user added to db!");
-        //         })
-        //         .catch(function (error) {
-        //             console.error("Error writing document: ", error);
-        //         });
-        // }).catch(function (error) {
-        //     console.log(error);
-        // });
+        // Handle oauth redirect for mobile
+        firebase.auth().getRedirectResult().then(function (result) {
+            // @ts-ignore
+            handleSignin(result);
+        }).catch(function (error) {
+            console.log(error);
+        });
     });
 
 }
