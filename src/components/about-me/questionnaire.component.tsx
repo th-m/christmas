@@ -22,7 +22,11 @@ export const Questionnaire = () => {
     const [initialValues, setInitialValues] = useState(iv);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const successMessage = (m) => (success) => console.log(m, { success })
+    const successMessage = (m) => (success) => {
+        console.log(m, { success })
+        setShowSuccess(true);
+        setTimeout(() => { setShowSuccess(false) }, 1000);
+    }
     const onSubmit = (formData) => {
         upsertQuestoinnaire(userState.user.uid, formData, successMessage('updated questions'));
     }
@@ -39,7 +43,7 @@ export const Questionnaire = () => {
     console.log({ initialValues })
     return (
         <>
-            {showSuccess && <h6>Successfuly updatgaid yiaof infaadf</h6>}
+            <h6>{showSuccess ? `Successfuly updatgaid yiaof infaadf` : `&nbsp;`}</h6>
             <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
                 <div className="question">
                     <label>Favorite color</label>
