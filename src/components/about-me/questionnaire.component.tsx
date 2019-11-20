@@ -17,33 +17,29 @@ const iv = {
     any: ''
 }
 export const Questionnaire = () => {
-    const { register, handleSubmit, errors } = useForm(); // initialise the hook
+    const { register, handleSubmit } = useForm(); // initialise the hook
     const { userState } = useContext<UserInterface>(User);
     const [initialValues, setInitialValues] = useState(iv);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const successMessage = (m) => (success) => {
-        console.log(m, { success })
+    const successMessage = () => () => {
         setShowSuccess(true);
-        setTimeout(() => { setShowSuccess(false) }, 1000);
+        setTimeout(() => { setShowSuccess(false) }, 2000);
     }
     const onSubmit = (formData) => {
-        upsertQuestoinnaire(userState.user.uid, formData, successMessage('updated questions'));
+        upsertQuestoinnaire(userState.user.uid, formData, successMessage());
     }
     useEffect(() => {
-        console.log({ userState });
-        const vals = getQuestions(userState.user.uid, (vals) => {
+        getQuestions(userState.user.uid, (vals) => {
             if (vals.questionnaire) {
                 setInitialValues({ ...vals.questionnaire })
-                console.log(vals.questionnaire)
             }
         });
         // setInitialValues({...vals.questionnaire})
     }, [userState.user.uid])
-    console.log({ initialValues })
     return (
         <>
-            <h6>{showSuccess ? `Successfuly updatgaid yiaof infaadf` : `&nbsp;`}</h6>
+            <h6>{showSuccess ? `Successfuly updatgaid yiaof infaadf` : `...`}</h6>
             <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
                 <div className="question">
                     <label>Favorite color</label>

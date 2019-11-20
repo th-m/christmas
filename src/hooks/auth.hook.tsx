@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { getUser, db, firebase } from '../fire'
+import { getUser, firebase } from '../fire'
 import { User, UserInterface } from "../store/user.store";
 import { handleSignin } from "../fire/facebook.auth";
 export const useAuth = () => {
@@ -16,7 +16,6 @@ export const useAuth = () => {
     useEffect(() => {
         // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
-            console.log(result);
             if (result && userState.user.uid === '') {
                 handleSignin({ user: result });
                 getUser(result.uid, handleUserLogin)

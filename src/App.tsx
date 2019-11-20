@@ -1,28 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import './App.css';
-
-import { Beneficiary } from './components/beneficiary.component';
-import { WishList } from './components/wishlist.component';
 import { AboutMe } from './components/about-me/about-me.component';
 import { UserProvider, User, UserInterface } from './store/user.store'
 import { fbSignUp } from './fire';
 import { useAuth } from './hooks/auth.hook';
 const App = () => {
-  const [family, setFamily] = useState("behunin");
-  // const [beneficiary, setBeneficiary] = useState('');
   const { userState } = useContext<UserInterface>(User);
-
   useAuth();
-  // const getInfo = () => {
-  //   fire.get(`/families/${family.toLowerCase()}/${user.toLowerCase()}/has`).then(x => {
-  //     setBeneficiary(x)
-  //   })
-  // }
-
-  useEffect(() => {
-    // getInfo()
-    console.log('hi');
-  }, [family, userState.user.displayName])
 
   return (
     <div className="App">
@@ -34,25 +18,6 @@ const App = () => {
         <AboutMe />
         : <button onClick={fbSignUp}> Sign In</button>
       }
-      {/* {
-        user && beneficiary
-          ? <div className='split'>
-            <Beneficiary name={beneficiary} family={family} />
-            <div>
-
-              <WishList user={user} family={family} />
-            </div>
-          </div>
-          : <div className='row start'>
-            <select onChange={(e) => setFamily(e.target.value)} value={family}>
-              <option value="behunin">Behunin</option>
-              <option value="valadez">Valadez</option>
-            </select>
-            <input placeholder="Enter your name" onChange={(e) => setUser(e.target.value)} />
-          </div>
-
-      } */}
-
     </div>
   );
 }

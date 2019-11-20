@@ -1,8 +1,10 @@
-import React, { createContext, useReducer, useState } from 'react';
-import { string } from 'prop-types';
+import React, { createContext, useReducer } from 'react';
 
 // @ts-ignore
+
 let User = createContext();
+// QuestionnaireInterface
+
 interface UserState {
     user: {
         uid: string;
@@ -11,6 +13,11 @@ interface UserState {
         providerId: string;
         photoURL: string;
         phoneNumber: string;
+        family?: {
+            [key: string]: {
+                has: string;
+            }
+        }
     }
 }
 
@@ -21,14 +28,14 @@ export interface UserInterface {
     dispatchUser: (params: { type: DispatchActions, payload?: any; }) => void;
 }
 
-const test = {
-    displayName: "Thomas Valadez",
-    email: "thomvaladez@gmail.com",
-    phoneNumber: '',
-    photoURL: "https://avatars.io/facebook/2793638373991728",
-    providerId: "facebook",
-    uid: "PKIpniPK6jQEwhrPZ5ueONbsZz72",
-}
+// const test = {
+//     displayName: "Thomas Valadez",
+//     email: "thomvaladez@gmail.com",
+//     phoneNumber: '',
+//     photoURL: "https://avatars.io/facebook/2793638373991728",
+//     providerId: "facebook",
+//     uid: "PKIpniPK6jQEwhrPZ5ueONbsZz72",
+// }
 let initialState: UserState = {
     user: {
         uid: '',
