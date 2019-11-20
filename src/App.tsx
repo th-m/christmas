@@ -11,14 +11,7 @@ const App = () => {
   const [family, setFamily] = useState("behunin");
   // const [beneficiary, setBeneficiary] = useState('');
   const { userState } = useContext<UserInterface>(User);
-  userState.user = {
-    displayName: "Thomas Valadez",
-    email: "thomvaladez@gmail.com",
-    phoneNumber: '',
-    photoURL: "https://avatars.io/facebook/2793638373991728",
-    providerId: "facebook",
-    uid: "PKIpniPK6jQEwhrPZ5ueONbsZz72",
-  }
+
   useAuth();
   // const getInfo = () => {
   //   fire.get(`/families/${family.toLowerCase()}/${user.toLowerCase()}/has`).then(x => {
@@ -36,7 +29,7 @@ const App = () => {
       <h3>
         Secret Santanator Game 3000-v0.2
       </h3>
-      {userState.user.uid
+      {userState.user.uid !== ''
         ?
         <AboutMe />
         : <button onClick={fbSignUp}> Sign In</button>

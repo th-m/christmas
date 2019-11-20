@@ -39,47 +39,47 @@ export const Questionnaire = () => {
         <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
             <div className="question">
                 <label>Favorite color</label>
-                <input type="text" ref={register} name="color" value={initialValues.color} />
+                <input type="text" ref={register} name="color" defaultValue={initialValues.color} />
             </div>
             <div className="question">
                 <label>Favorite band or music</label>
-                <input type="text" ref={register} name="music" value={initialValues.music} />
+                <input type="text" ref={register} name="music" defaultValue={initialValues.music} />
             </div>
             <div className="question">
                 <label>Favorite treat/snack/flavor</label>
-                <input type="text" ref={register} name="treat" value={initialValues.treat} />
+                <input type="text" ref={register} name="treat" defaultValue={initialValues.treat} />
             </div>
             <div className="question">
                 <label>Favorite gift card</label>
-                <input type="text" ref={register} name="giftcard" value={initialValues.giftcard} />
+                <input type="text" ref={register} name="giftcard" defaultValue={initialValues.giftcard} />
             </div>
             <div className="question">
                 <label>Favorite book or author</label>
-                <input type="text" ref={register} name="author" value={initialValues.author} />
+                <input type="text" ref={register} name="author" defaultValue={initialValues.author} />
             </div>
             <div className="question">
                 <label>What does your perfect day look like?</label>
-                <input type="text" ref={register} name="perfectday" value={initialValues.perfectday} />
+                <input type="text" ref={register} name="perfectday" defaultValue={initialValues.perfectday} />
             </div>
             <div className="question">
                 <label>What does your worst day look like?</label>
-                <input type="text" ref={register} name="worstday" value={initialValues.worstday} />
+                <input type="text" ref={register} name="worstday" defaultValue={initialValues.worstday} />
             </div>
             <div className="question">
                 <label>How do you relax?</label>
-                <input type="text" ref={register} name="relax" value={initialValues.relax} />
+                <input type="text" ref={register} name="relax" defaultValue={initialValues.relax} />
             </div>
             <div className="question">
                 <label>What do you dislike?</label>
-                <input type="text" ref={register} name="dislike" value={initialValues.dislike} />
+                <input type="text" ref={register} name="dislike" defaultValue={initialValues.dislike} />
             </div>
             <div className="question">
                 <label>Sport ball game team?</label>
-                <input type="text" ref={register} name="sport" value={initialValues.sport} />
+                <input type="text" ref={register} name="sport" defaultValue={initialValues.sport} />
             </div>
             <div className="question">
                 <label>Anything else?</label>
-                <input type="text" ref={register} name="any" value={initialValues.any} />
+                <input type="text" ref={register} name="any" defaultValue={initialValues.any} />
             </div>
             <div>
                 <input type="submit" />
