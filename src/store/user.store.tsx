@@ -18,7 +18,7 @@ type DispatchActions = 'logout' | 'login';
 
 export interface UserInterface {
     userState: UserState;
-    dispatchUser: (params: { type: DispatchActions, payload: any; }) => void;
+    dispatchUser: (params: { type: DispatchActions, payload?: any; }) => void;
 }
 
 const test = {
@@ -31,13 +31,13 @@ const test = {
 }
 let initialState: UserState = {
     user: {
-        // uid: '',
-        // displayName: '',
-        // email: '',
-        // providerId: '',
-        // photoURL: '',
-        // phoneNumber: '',
-        ...test,
+        uid: '',
+        displayName: '',
+        email: '',
+        providerId: '',
+        photoURL: '',
+        phoneNumber: '',
+        // ...test,
     },
 };
 

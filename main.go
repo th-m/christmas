@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -39,9 +40,9 @@ func middleWare(h http.Handler, middleware ...func(http.Handler) http.Handler) h
 
 func checkUrl(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		if r.URL.Host == "santa-nator.com" {
-			http.Redirect(w, r, "www.santa-nator.com", http.StatusSeeOther)
+		fmt.Printf("Req: %s %s\n", r.Host, r.URL.Path)
+		if r.Host == "santa-nator.com" {
+			http.Redirect(w, r, "https://www.santa-nator.com", http.StatusSeeOther)
 		}
 		next.ServeHTTP(w, r)
 	})

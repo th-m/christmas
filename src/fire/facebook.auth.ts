@@ -9,7 +9,7 @@ const handleSignin = (result) => {
     const { uid, displayName, email, phoneNumber, providerData } = result.user;
 
     const coll = { uid, displayName, email, providerId: 'facebook', photoURL: `https://avatars.io/facebook/${providerData[0].uid}`, phoneNumber };
-    db.collection("users").doc(uid).set(coll)
+    db.collection("users").doc(uid).set(coll, { merge: true })
         .then(function () {
             console.log("user added to db!");
         })
