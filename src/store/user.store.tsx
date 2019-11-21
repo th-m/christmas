@@ -13,9 +13,10 @@ interface UserState {
         providerId: string;
         photoURL: string;
         phoneNumber: string;
-        family?: {
+        games?: {
             [key: string]: {
                 has: string;
+                name: string;
             }
         }
     }

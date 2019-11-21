@@ -24,6 +24,22 @@ input{
   padding: 10px, 5px;
   font-size: .8em;
 }
+textarea{
+  letter-spacing:.1em;
+  background-color: #eceaea00;
+  color: white;
+  text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  /* color: rgba(228, 110, 110, 0.719); */
+  border-radius: 8px;
+  border-style:solid;
+  border-color: #eceaea;
+  padding: 10px, 5px;
+  font-size: .8em;
+}
 
 button{
   letter-spacing:.1em;
@@ -205,6 +221,16 @@ canvas{
 
   .question {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
+  }
+  .question p {
+    color:white;
+  }
+  .question.answer {
+    flex-direction: row;
+  }
+  .question.answer label {
+    display: flex;
+    align-items: center;
   }

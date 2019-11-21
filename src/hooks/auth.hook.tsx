@@ -1,8 +1,12 @@
 import { useContext, useEffect } from "react";
 import { getUser, firebase } from '../fire'
 import { User, UserInterface } from "../store/user.store";
-import { handleSignin } from "../fire/facebook.auth";
+import { updateUserInfo } from "../fire/facebook.auth";
+import {
+    useParams
+} from 'react-router-dom'
 export const useAuth = () => {
+    let { gameId } = useParams()
     const { userState, dispatchUser } = useContext<UserInterface>(User);
 
     const handleUserLogin = (userData) => {
@@ -17,7 +21,19 @@ export const useAuth = () => {
         // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
             if (result && userState.user.uid === '') {
-                handleSignin({ user: result });
+                console.log(gameId);
+                // if (gameId) {
+                //     updateUserInfo({ user: result }, {
+                //         games: {
+                //             [gameId]: {
+                //                 has: "",
+                //                 name: "",
+                //             }
+                //         }
+                //     });
+                // } else {
+                updateUserInfo({ user: result });
+                // }
                 getUser(result.uid, handleUserLogin)
             } else if (!result && userState.user) {
                 handleUserLogout()
@@ -27,7 +43,7 @@ export const useAuth = () => {
         // Handle oauth redirect for mobile
         firebase.auth().getRedirectResult().then(function (result) {
             // @ts-ignore
-            handleSignin(result);
+            updateUserInfo(result);
         }).catch(function (error) {
             console.log(error);
         });

@@ -1,6 +1,7 @@
 // import firebase from 'firebase'
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
 import 'firebase/firestore';
 import 'firebase/storage';
 import 'firebase/messaging';
@@ -14,6 +15,7 @@ const config = {
 }
 
 firebase.initializeApp(config)
+export const realTimedb = firebase.database();
 const db = firebase.firestore();
 db.enablePersistence()
     .catch(function (err) {
