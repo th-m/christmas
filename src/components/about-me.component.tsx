@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { UserInterface, User } from "../store/user.store";
 import { useGames } from '../hooks/use-games.hook';
 import { Questionnaire } from './questionnaire.component';
-import { getUser, getGameUser } from '../fire';
+import { getUser } from '../fire';
 import { updateUserInfo } from '../fire/facebook.auth';
 import { Beneficiary } from './beneficiary.component';
 

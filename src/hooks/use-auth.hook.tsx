@@ -1,18 +1,32 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getUser, firebase } from '../fire'
 import { User, UserInterface } from "../store/user.store";
 import { updateUserInfo, fbSignUp } from "../fire/facebook.auth";
 import {
     useParams
 } from 'react-router-dom'
+const santaLoadingKey = 'santa-nator-loading';
+
+const checkLocalStorageLoading = () => {
+    const isLoading = localStorage.getItem(santaLoadingKey);
+    if (!isLoading) {
+        return false;
+    }
+    return isLoading === "true" ? true : false;
+}
 export const useAuth = () => {
     let { gameId } = useParams()
     const { userState, dispatchUser } = useContext<UserInterface>(User);
+    const [loading, setLoading] = useState(checkLocalStorageLoading());
 
     const handleUserLogin = (userData) => {
         dispatchUser({ type: 'login', payload: userData });
+        handleLoadingChange(false);
     }
-
+    const handleLoadingChange = (b: boolean) => {
+        setLoading(b);
+        localStorage.setItem(santaLoadingKey, b ? 'true' : 'false');
+    }
     const handleUserLogout = () => {
         dispatchUser({ type: 'logout' });
     }
@@ -20,13 +34,12 @@ export const useAuth = () => {
         try {
             await firebase.auth().signOut();
             handleUserLogout();
-            // signed out
         } catch (e) {
             console.warn(e);
-            // an error
         }
     }
     const login = () => {
+        handleLoadingChange(true);
         fbSignUp();
     }
     useEffect(() => {
@@ -64,5 +77,5 @@ export const useAuth = () => {
         // Handle oauth redirect for mobile
     });
 
-    return { login, logout }
+    return { login, logout, loading }
 }
