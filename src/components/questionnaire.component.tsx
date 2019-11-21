@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import useForm from 'react-hook-form';
-import { upsertQuestoinnaire, getQuestions } from '../../fire';
-import { UserInterface, User } from '../../store/user.store';
+import { upsertQuestoinnaire, getQuestions } from '../fire';
+import { UserInterface, User } from '../store/user.store';
 const iv = {
     id: '',
     color: '',

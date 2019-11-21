@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useContext } from "react";
-import { UserInterface, User } from "../../store/user.store";
+import { UserInterface, User } from "../store/user.store";
 import { Questionnaire } from './questionnaire.component';
-import { getUser, getGame, getGameUser } from '../../fire';
-import { updateUserInfo } from '../../fire/facebook.auth';
-import { Beneficiary } from '../beneficiary.component';
+import { getUser, getGame, getGameUser } from '../fire';
+import { updateUserInfo } from '../fire/facebook.auth';
+import { Beneficiary } from './beneficiary.component';
 
 const initialBeneficiary = {
     displayName: '',

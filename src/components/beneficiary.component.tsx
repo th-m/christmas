@@ -1,5 +1,4 @@
 import React from 'react';
-import { Things } from './things.component'
 
 export const Beneficiary = ({ beneficiary }: any) => {
     console.log(beneficiary);

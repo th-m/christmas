@@ -1,4 +1,4 @@
-import { db, CB } from './constants'
+import { db, CB, realTimedb } from './constants'
 export { auth, db, firebase, provider, storage } from './constants'
 export { fbSignUp } from './facebook.auth'
 
@@ -51,4 +51,11 @@ export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
     }).catch(error => {
       console.error("Error upsertQuestoinnaire: ", error);
     });
+}
+
+
+function get(path) {
+  return realTimedb.ref(path).once("value").then(snapshot => {
+    return snapshot.val();
+  });
 }
