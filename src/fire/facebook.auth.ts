@@ -4,6 +4,7 @@ import { auth, db, firebase } from '.'
 import { mobilecheck } from '../utils';
 
 const provider = new firebase.auth.FacebookAuthProvider();
+
 export const updateUserInfo = (result, moreData = {}) => {
     // @ts-ignore
     const { uid, displayName, email, phoneNumber, providerData } = result.user;
@@ -23,10 +24,11 @@ export const updateUserInfo = (result, moreData = {}) => {
 }
 
 export const fbSignUp = () => {
-    if (mobilecheck()) {
+    if (!mobilecheck()) {
         auth.signInWithPopup(provider).then(updateUserInfo).catch((error) => console.log({ error }));
     } else {
-        auth.signInWithRedirect(provider).then(updateUserInfo).catch((error) => console.log({ error }));
+        auth.signInWithRedirect(provider)
+            .then(updateUserInfo).catch((error) => console.log({ error }));
     }
 }
 

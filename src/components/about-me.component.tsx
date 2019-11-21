@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useContext } from "react";
 import { UserInterface, User } from "../store/user.store";
+import { useGames } from '../hooks/use-games.hook';
 import { Questionnaire } from './questionnaire.component';
-import { getUser, getGame, getGameUser } from '../fire';
+import { getUser, getGameUser } from '../fire';
 import { updateUserInfo } from '../fire/facebook.auth';
 import { Beneficiary } from './beneficiary.component';
 
@@ -10,45 +11,12 @@ const initialBeneficiary = {
     displayName: '',
     photoURL: ''
 }
-const useGames = (games) => {
-    const [gamesArr, setGamesArr] = useState<any[]>([]);
-    const [selectedGame, setSelectedGame] = useState<string>('');
-    const [gameDetails, setGameDetails] = useState<any>({ gid: '' });
-    useEffect(() => {
-        if (games) {
-            setGamesArr(Object.keys(games))
-            setSelectedGame(Object.keys(games)[0])
-        }
-    }, [JSON.stringify(games)])
-
-    useEffect(() => {
-        getGame(selectedGame, (gameData) => {
-            // console.log({ gameData });
-            setGameDetails(gameData)
-        })
-    }, [selectedGame])
-    return { games: gamesArr, selectedGame: gameDetails, setSelectedGame }
-}
-
-const useGamesSecret = ({ gid }, uid) => {
-    const [secrets, setSecrets] = useState()
-    useEffect(() => {
-        if (gid !== '' && uid) {
-            getGameUser(gid, uid, (data) => {
-                setSecrets(data);
-            })
-        }
-    }, [gid, uid])
-
-    return { secrets: { ...secrets, uid, id: gid } }
-}
 
 export const AboutMe = () => {
     const { userState } = useContext<UserInterface>(User);
     const [showQuestions, setShowQuestions] = useState(true);
     const [beneficiary, setBeneficiary] = useState<any>(initialBeneficiary);
-    const { games, selectedGame, setSelectedGame } = useGames(userState.user.games)
-    const { secrets } = useGamesSecret(selectedGame, userState.user.uid)
+    const { games, selectedGame, setSelectedGame, secrets } = useGames(userState.user.games)
 
     useEffect(() => {
         if (selectedGame && secrets && secrets.has && userState.user && userState.user.uid) {
