@@ -15,7 +15,7 @@ const checkLocalStorageLoading = () => {
     return isLoading === "true" ? true : false;
 }
 export const useAuth = () => {
-    let { gameId } = useParams()
+    // let { gameId } = useParams()
     const { userState, dispatchUser } = useContext<UserInterface>(User);
     const [loading, setLoading] = useState(checkLocalStorageLoading());
 
@@ -46,19 +46,19 @@ export const useAuth = () => {
         // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
             if (result && userState.user.uid === '') {
-                console.log(gameId);
-                if (gameId) {
-                    updateUserInfo({ user: result }, {
-                        games: {
-                            [gameId]: {
-                                has: "",
-                                name: "",
-                            }
-                        }
-                    });
-                } else {
-                    updateUserInfo({ user: result });
-                }
+                // console.log(gameId);
+                // if (gameId) {
+                //     updateUserInfo({ user: result }, {
+                //         games: {
+                //             [gameId]: {
+                //                 has: "",
+                //                 name: "",
+                //             }
+                //         }
+                //     });
+                // } else {
+                updateUserInfo({ user: result });
+                // }
                 getUser(result.uid, handleUserLogin)
             } else if (!result && userState.user) {
                 handleUserLogout()

@@ -85,7 +85,7 @@ export const Questionnaire = () => {
                     <textarea ref={register} name="any" defaultValue={initialValues.any} />
                 </div>
                 <div>
-                    <input type="submit" value={showSuccess ? `success` : `save`} />
+                    <button type="submit">{showSuccess ? `success` : `save`} </button>
                 </div>
             </form>
         </>

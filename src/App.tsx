@@ -1,46 +1,67 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
 import { AboutMe } from './components/about-me.component';
-import { Loading } from './components/loading.component';
-import { UserProvider, User, UserInterface } from './store/user.store'
-import { fbSignUp } from './fire';
-import { useAuth } from './hooks/use-auth.hook';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { MakeGame } from './components/make-game/make-game.component';
+import { NavControls } from './components/nav-controls.component';
+import { User, UserInterface, UserProviderHoc } from './store/user.store'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  useParams
+} from 'react-router-dom'
+import { updateUserInfo } from './fire/facebook.auth';
+import { addUserToGame } from './fire';
 
-const App = () => {
+const InitiateAboutMe = () => {
   const { userState } = useContext<UserInterface>(User);
-  const { login, logout, loading } = useAuth();
+  const { gameKey } = useParams();
+  useEffect(() => {
+    if (gameKey && gameKey !== '' && userState.user.uid !== '') {
+      console.log(userState.user);
+      if (userState.user.games && userState.user.games[gameKey]) {
+        console.log('user has already been added to game');
+      } else {
+        console.log('lets add this bish', { gameKey });
+        addUserToGame(gameKey, userState, (d) => {
+          console.log('what did this func say', { d })
+          updateUserInfo(userState, {
+            games: {
+              [gameKey]: {
+                has: "",
+                name: "",
+              }
+            }
+          });
+          console.log('added user info to the game');
+        });
+      }
+    }
+  }, [gameKey, userState.user.uid])
+
   return (
-    <div className="App">
-      {userState.user.uid === '' && !loading &&
-        <button onClick={login}> Sign In</button>
-      }
+    <>
       {userState.user.uid !== '' &&
-        <button onClick={logout}>Sign out</button>
-
+        <AboutMe />
       }
-
-      <h3>
-        Secret Santanator Game 3000-v0.2
-      </h3>
-      {loading && <Loading />}
-      {userState.user.uid !== '' && <AboutMe />}
-    </div>
+    </>
   );
 }
 
-const WrappedApp = () => (
-  <UserProvider>
-    <Router>
-      <Switch>
-        <Route path="/:gameId" component={App} />
-        <Route component={App} />
-      </Switch>
-    </Router>
-  </UserProvider>
-)
+const AppRouter = () => {
+  return (
+    <div className="App">
+      <Router>
+        <Route component={NavControls} />
+        <Switch>
+          <Route path="/create-game" component={MakeGame} />
+          <Route path="/:gameKey" component={InitiateAboutMe} />
+          <Route component={InitiateAboutMe} />
+        </Switch>
+      </Router>
+    </div>
+  )
+}
 
-export default WrappedApp;
+export default UserProviderHoc(AppRouter);
 
 
 

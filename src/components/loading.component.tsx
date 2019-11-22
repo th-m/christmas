@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import loadingGif from '../assets/santa.gif';
 const loadingMessages = [
-    "checking list",
+    "sorting goodies from badies",
+    "reconciling naughty list",
+    "monitoring child surveillance cams",
     "feeding reindeer",
     "consulting miss claus",
     "eating cookie",
-    "inspecting toys",
-    "meeting with workshop elves",
+    "RnD elves presenting 2020 toys",
+    "running QA with workshop elves",
     "practicing jolly laughter",
     "prepping coal",
     "drinking milk",

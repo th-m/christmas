@@ -16,20 +16,22 @@ export const useGames = (games) => {
     }, [JSON.stringify(games)])
 
     useEffect(() => {
-        getGame(selectedGame, (gameData) => {
-            // console.log({ gameData });
-            setGameDetails(gameData)
-        })
+        if (selectedGame !== '') {
+            getGame(selectedGame, (gameData) => {
+                // console.log({ gameData });
+                setGameDetails(gameData)
+            })
+        }
     }, [selectedGame])
-
+    const gid = gameDetails && gameDetails.gid ? gameDetails.gid : null;
     useEffect(() => {
-        if (gameDetails.gid !== '' && userState.user.uid) {
-            getGameUser(gameDetails.gid, userState.user.uid, (data) => {
+        if (gid && gid !== '' && userState.user.uid) {
+            getGameUser(gid, userState.user.uid, (data) => {
                 setSecrets(data);
             })
         }
-    }, [gameDetails.gid, userState.user.uid])
+    }, [gid, userState.user.uid])
 
 
-    return { games: gamesArr, selectedGame: gameDetails, setSelectedGame, secrets: { ...secrets, uid: userState.user.uid, id: gameDetails.gid } }
+    return { games: gamesArr, selectedGame: gameDetails, setSelectedGame, secrets: { ...secrets, uid: userState.user.uid, id: gid } }
 }

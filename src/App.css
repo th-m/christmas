@@ -25,6 +25,9 @@ input{
   font-size: .8em;
 }
 textarea{
+  padding: 5px;
+  background: #0009 !important;
+  margin: 10px;
   letter-spacing:.1em;
   background-color: #eceaea00;
   color: white;
@@ -256,4 +259,57 @@ canvas{
   .loading img {
     width: 100%;
     max-width: 400px;
+  }
+
+  .logout {
+    position: absolute;
+    right:0px;
+  }
+  .login-container{
+    height:100%;
+    display: flex;
+    align-items: center;
+    justify-content: center
+   }
+
+  .login {
+    width: 90%;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    font-size: 2em;
+  }
+
+  .nav-button-wrapper{
+    position: relative;
+    margin: 20px 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+
+  .questionnaire button{
+    font-size: 24px;
+    margin: 10px auto;
+    margin: 10px 0;
+    font-size: 24px;
+    width: calc(100% - 20px);
+  }
+
+  .manage-option{
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .select-exclude{
+    height: 26px;
+  }
+  .select-exclude:active, .select-exclude:focus{
+    height: inherit;
   }

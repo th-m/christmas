@@ -23,6 +23,7 @@ interface UserState {
 type DispatchActions = 'logout' | 'login';
 
 export interface UserInterface {
+    isAuthenticated: boolean;
     userState: UserState;
     dispatchUser: (params: { type: DispatchActions, payload?: any; }) => void;
 }
@@ -51,7 +52,8 @@ let reducer = (state, action) => {
 function UserProvider(props) {
     // const [foo, setFoo] = useState('foo');
     let [userState, dispatchUser] = useReducer(reducer, initialState);
-    let value = { userState, dispatchUser };
+    let isAuthenticated = userState && userState.user.uid !== '';
+    let value = { userState, dispatchUser, isAuthenticated };
 
 
     return (
@@ -60,5 +62,15 @@ function UserProvider(props) {
 }
 
 let UserConsumer = User.Consumer;
+function UserProviderHoc(WrappedComponent) {
+    return function Wrapper(props) {
+        return (
+            <UserProvider>
+                <WrappedComponent {...props} />
+            </UserProvider>
+        )
+    }
 
-export { User, UserProvider, UserConsumer };
+}
+
+export { User, UserProvider, UserConsumer, UserProviderHoc };

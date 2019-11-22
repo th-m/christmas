@@ -7,24 +7,46 @@ export const getUser = (uid: string, cb: CB) => {
 }
 export const getGame = (gameKey: string, cb: CB) => {
   db.collection('games').where("gameKey", "==", gameKey).get().then(querySnapshot => {
-
+    const games: any[] = []
     querySnapshot.forEach(function (doc) {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
-      cb({ gid: doc.id, ...doc.data() })
+      games.push({ gid: doc.id, ...doc.data() })
     })
+    if (games.length < 1) {
+      console.log('no game with that key', { gameKey });
+      cb(null)
+    } else {
+      cb(games[0])
+    }
   });
 }
 
-export const getGameUser = (id: string, uid: string, cb: CB) => {
-  db.collection('games').doc(id).collection('users').where("id", "==", uid).get().then(querySnapshot => {
+export const getGameUser = (gid: string, uid: string, cb: CB) => {
+  db.collection('games').doc(gid).collection('users').where("id", "==", uid).get().then(querySnapshot => {
     querySnapshot.forEach(function (doc) {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
       cb(doc.data())
     })
   });
 }
+
+export const getGameUsers = (gid: string, cb: CB) => {
+  db.collection('games').doc(gid).collection('users').onSnapshot(querySnapshot => {
+    const users: Object[] = [];
+    querySnapshot.forEach(function (doc) {
+      users.push({ uid: doc.id, ...doc.data() })
+    })
+    cb(users)
+  });
+}
+export const getCreatorsGames = (uid: string, cb: CB) => {
+  db.collection('games').where("creatorId", "==", uid).onSnapshot(querySnapshot => {
+    const games: Object[] = [];
+    querySnapshot.forEach(function (doc) {
+      games.push({ gid: doc.id, ...doc.data() })
+    })
+    cb(games)
+  });
+}
+
 export const getQuestions = (uid: string, cb: CB) => {
   if (uid === '' || !uid) { return }
   return db.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
@@ -44,7 +66,10 @@ interface Questionnaire {
 }
 
 export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
-  if (uid === '' || !uid) return;
+  if (!uid || uid === '') {
+    console.log(`if (!uid || uid === '' ) `)
+    return;
+  }
   db.collection('users').doc(uid).set({ questionnaire: data }, { merge: true })
     .then(() => {
       cb('success');
@@ -53,9 +78,74 @@ export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
     });
 }
 
-
-function get(path) {
-  return realTimedb.ref(path).once("value").then(snapshot => {
-    return snapshot.val();
-  });
+export const updateGameUserInfo = (gid: string, data, cb) => {
+  if (!gid || gid === '') {
+    console.log(`updateGameUserInfo if (!uid || uid === '' ) `)
+    return;
+  }
+  if (!data || !data.uid || data.uid === '') {
+    console.log(`updateGameUserInfo if (!data || !data.uid || data.uid === '' ) `)
+    return;
+  }
+  db.collection('games').doc(gid).collection('users').doc(data.uid).set({ ...data }, { merge: true })
+    .then(() => {
+      cb('success');
+    }).catch(error => {
+      console.error("Error upsertQuestoinnaire: ", error);
+    });
 }
+
+export const addUserToGame = (gameKey: string, { user }, cb) => {
+  const data = user;
+  if (gameKey === '' || !gameKey) {
+    console.log(`if (gameKey === '' || !gameKey)`)
+    return;
+  }
+  if (!data || !data.uid || data.uid === '') {
+    console.log(`if (!data || !data.uid || data.uid === '')`)
+    return;
+  }
+  console.log('gameKey', gameKey);
+  getGame(gameKey, (responseData) => {
+    console.log(responseData);
+    const updateData = {
+      displayName: data.displayName,
+      photoURL: data.photoURL,
+      uid: data.uid,
+      exclude: [],
+      has: "",
+      name: "",
+    }
+    if (!responseData || !responseData.gid) {
+      console.log('woops that game dont exist');
+      return;
+    }
+    db.collection('games').doc(responseData.gid).collection('users').doc(data.uid).set(updateData, { merge: true })
+      .then(() => {
+        cb('success');
+      }).catch(error => {
+        console.error("Error upsertQuestoinnaire: ", error);
+      });
+  })
+}
+
+export const addGame = (data, cb) => {
+  if (!data || !data.creatorId || data.creatorId === '') {
+    console.error('(!data || !data.creatorId || data.creatorId === ')
+    return;
+  }
+  if (!data.gameKey || data.gameKey === '') {
+    console.error('(!data.gameKey || data.gameKey === ')
+    return;
+  }
+
+  db.collection('games').add(data).then(d => { cb(true) }).catch(e => { console.error(e) })
+
+}
+
+
+// function get(path) {
+//   return realTimedb.ref(path).once("value").then(snapshot => {
+//     return snapshot.val();
+//   });
+// }
