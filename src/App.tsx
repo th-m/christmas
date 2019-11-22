@@ -10,15 +10,18 @@ import {
 } from 'react-router-dom'
 import { updateUserInfo } from './fire/facebook.auth';
 import { addUserToGame } from './fire';
+import { useHistory } from 'react-router-dom'
 
 const InitiateAboutMe = () => {
   const { userState } = useContext<UserInterface>(User);
   const { gameKey } = useParams();
+  const history = useHistory();
   useEffect(() => {
     if (gameKey && gameKey !== '' && userState.user.uid !== '') {
       console.log(userState.user);
       if (userState.user.games && userState.user.games[gameKey]) {
         console.log('user has already been added to game');
+        history.push('/')
       } else {
         console.log('lets add this bish', { gameKey });
         addUserToGame(gameKey, userState, (d) => {
@@ -32,6 +35,7 @@ const InitiateAboutMe = () => {
             }
           });
           console.log('added user info to the game');
+          history.push('/');
         });
       }
     }
