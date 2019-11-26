@@ -28,7 +28,8 @@ export const NavControls = () => {
                                 }
                             </>
                         }
-                        <iframe src="//rcm-na.amazon-adsystem.com/e/cm?o=1&p=26&l=ur1&category=amazonhomepage&f=ifr&linkID=3bbe1b0cd2947cd880f38191e5cc9720&t=thmcodes-20&tracking_id=thmcodes-20" width="468" height="60" scrolling="no" marginWidth={0} style={{ border: "none;" }} frameBorder="0"></iframe>
+                        <a href="https://www.amazon.com/?tag=thmcodes-20&linkCode=ez" target="_blank"><button>Buy Stuff</button></a>
+                        {/* <iframe src="//rcm-na.amazon-adsystem.com/e/cm?o=1&p=26&l=ur1&category=amazonhomepage&f=ifr&linkID=3bbe1b0cd2947cd880f38191e5cc9720&t=thmcodes-20&tracking_id=thmcodes-20" width="468" height="60" scrolling="no" marginWidth={0} style={{ border: "none;" }} frameBorder="0"></iframe> */}
                         {userState.user.uid !== '' && <button onClick={logout}>Sign out</button>}
                     </div>
                 </div>

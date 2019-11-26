@@ -21,11 +21,10 @@ export const getGame = (gameKey: string, cb: CB) => {
 }
 
 export const getGameUser = (gid: string, uid: string, cb: CB) => {
-  db.collection('games').doc(gid).collection('users').where("id", "==", uid).get().then(querySnapshot => {
-    querySnapshot.forEach(function (doc) {
-      cb(doc.data())
-    })
-  });
+  db.collection('games').doc(gid).collection('users').doc(uid).get().then(doc => {
+    const d = doc.data();
+    cb(d)
+  })
 }
 
 export const getGameUsers = (gid: string, cb: CB) => {

@@ -10,7 +10,7 @@ export const useGames = (games) => {
     const [secrets, setSecrets] = useState()
     useEffect(() => {
         if (games) {
-            setGamesArr(Object.keys(games))
+            setGamesArr(Object.keys(games).map(g => games[g]))
             setSelectedGame(Object.keys(games)[0])
         }
     }, [JSON.stringify(games)])
@@ -18,20 +18,19 @@ export const useGames = (games) => {
     useEffect(() => {
         if (selectedGame !== '') {
             getGame(selectedGame, (gameData) => {
-                // console.log({ gameData });
                 setGameDetails(gameData)
+                if (gameData && gameData.gid && gameData.gid !== '' && userState.user.uid) {
+                    getGameUser(gameData.gid, userState.user.uid, (data) => {
+                        const gid = gameData && gameData.gid ? gameData.gid : null;
+                        const name = gameData && gameData.name ? gameData.name : null;
+                        setSecrets({ ...data, uid: userState.user.uid, id: gid, name });
+                    })
+                }
             })
         }
     }, [selectedGame])
-    const gid = gameDetails && gameDetails.gid ? gameDetails.gid : null;
-    useEffect(() => {
-        if (gid && gid !== '' && userState.user.uid) {
-            getGameUser(gid, userState.user.uid, (data) => {
-                setSecrets(data);
-            })
-        }
-    }, [gid, userState.user.uid])
 
 
-    return { games: gamesArr, selectedGame: gameDetails, setSelectedGame, secrets: { ...secrets, uid: userState.user.uid, id: gid } }
+
+    return { games: gamesArr, selectedGame: gameDetails, setSelectedGame, secrets }
 }
