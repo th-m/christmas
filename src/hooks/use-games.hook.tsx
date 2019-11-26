@@ -10,7 +10,7 @@ export const useGames = (games) => {
     const [secrets, setSecrets] = useState()
     useEffect(() => {
         if (games) {
-            setGamesArr(Object.keys(games).map(g => games[g]))
+            setGamesArr(Object.keys(games).map(g => ({ ...games[g], gameKey: g })))
             setSelectedGame(Object.keys(games)[0])
         }
     }, [JSON.stringify(games)])

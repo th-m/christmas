@@ -19,7 +19,6 @@ export const AboutMe = () => {
     const { games, selectedGame, setSelectedGame, secrets } = useGames(userState.user.games)
 
     useEffect(() => {
-        console.log({ games, selectedGame })
         if (selectedGame && secrets && secrets.has && userState.user && userState.user.uid) {
             updateUserInfo(userState, { games: { [selectedGame.gameKey]: secrets } })
         }
@@ -47,7 +46,7 @@ export const AboutMe = () => {
                 <select onChange={handleChange}>
                     {
                         // @ts-ignore }
-                    }{games.map(game => <option key={game.id} value={game.id}>{game.name}</option>)}
+                    }{games.map(game => <option key={game.gameKey} value={game.gameKey}>{game.name}</option>)}
                 </select>
             }
             {showQuestions
