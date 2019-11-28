@@ -47,8 +47,8 @@ export const AboutMe = () => {
                         : <img className="avatar" alt={beneficiary.displayName} src={`${beneficiary.photoURL}/medium`} />
                     }
                 </div>
-                <h6>{beneficiary.displayName !== "" && !showQuestions ? 'Click to see who you got' : ''}</h6>
-                <h6>{showQuestions ? 'Click to your profile' : ''}</h6>
+                <h6>{beneficiary.displayName !== "" && showQuestions ? 'Click to see who you got' : ''}</h6>
+                <h6>{!showQuestions ? 'Click to your profile' : ''}</h6>
             </div>
             {games && games.length > 1 &&
                 <select onChange={handleChange}>
