@@ -32,15 +32,22 @@ export const AboutMe = () => {
 
 
     const handleChange = (event) => {
-        setSelectedGame(event.target.value);
+        if (event.target.value !== selectedGame) {
+            setBeneficiary(initialBeneficiary);
+            setShowQuestions(true);
+            setSelectedGame(event.target.value);
+        }
     }
     return (
         <div>
-            <div className="avatar_container">
-                {showQuestions
-                    ? <img className="avatar" onClick={() => setShowQuestions(false)} alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} />
-                    : <img className="avatar" onClick={() => setShowQuestions(true)} alt={beneficiary.displayName} src={`${beneficiary.photoURL}/medium`} />
-                }
+            <div onClick={() => beneficiary.displayName !== "" ? setShowQuestions(!showQuestions) : null}>
+                <div className="avatar_container">
+                    {showQuestions
+                        ? <img className="avatar" alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} />
+                        : <img className="avatar" alt={beneficiary.displayName} src={`${beneficiary.photoURL}/medium`} />
+                    }
+                </div>
+                <h6>{beneficiary.displayName !== "" ? 'Click to see who you got' : ''}</h6>
             </div>
             {games && games.length > 1 &&
                 <select onChange={handleChange}>

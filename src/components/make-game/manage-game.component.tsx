@@ -19,7 +19,7 @@ function shuffle(a) {
 export const ManageGame = ({ game }) => {
     const [copied, setCopied] = useState();
     const [users, setUsers] = useState<User[]>([])
-    const [logicErr, setLogicErr] = useState(true);
+    const [logicErr, setLogicErr] = useState(false);
 
     const handleCopy = () => {
         setCopied(true)
@@ -92,10 +92,8 @@ export const ManageGame = ({ game }) => {
                     let randomSelection;
                     while (invalidSelection(currentUser, randomSelection)) {
                         ticker++;
-                        console.log(ticker)
                         if (ticker > 100) {
                             tickerCheck = false;
-                            console.log('rules need to change');
                             setLogicErr(true);
                             setTimeout(() => {
                                 setLogicErr(false);
@@ -149,6 +147,12 @@ export const ManageGame = ({ game }) => {
                                 <option value={''}>-</option>
                                 {users.map(x => <option key={`${x.uid}-manaage-exclucs`} value={x.uid}>{x.displayName} </option>)}
                             </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label>has</label>
+                            <h6>{user.has}</h6>
                         </div>
                     </div>
                 </div>
