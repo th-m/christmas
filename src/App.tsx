@@ -54,7 +54,10 @@ const AppRouter = () => {
   return (
     <div className="App">
       <Router>
-        <Route path="/:gameKey" component={NavControls} />
+        <Switch>
+          <Route exact path="/" component={NavControls} />
+          <Route path="/:gameKey" component={NavControls} />
+        </Switch>
         <Switch>
           <Route path="/create-game" component={MakeGame} />
           <Route path="/:gameKey" component={InitiateAboutMe} />
