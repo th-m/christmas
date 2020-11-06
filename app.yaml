@@ -1,5 +1,5 @@
 # [START app_yaml]
-runtime: go112
+runtime: go114
 service: christmas
 # [END app_yaml]
 
