@@ -13,14 +13,13 @@ const initialBeneficiary = {
 }
 
 export const AboutMe = () => {
-    const { userState } = useContext<UserInterface>(User);
+    const { state } = useContext(User);
     const [showQuestions, setShowQuestions] = useState(true);
     const [beneficiary, setBeneficiary] = useState<any>(initialBeneficiary);
-    const { games, selectedGame, setSelectedGame, secrets } = useGames(userState.user.games)
-
+    const { games, selectedGame, setSelectedGame, secrets } = useGames(state.user.games)
     useEffect(() => {
-        if (selectedGame && secrets && secrets.has && userState.user && userState.user.uid) {
-            updateUserInfo(userState, { games: { [selectedGame.gameKey]: secrets } })
+        if (selectedGame && secrets && secrets.has && state.user && state.user.uid) {
+            updateUserInfo(state, { games: { [selectedGame.gameKey]: secrets } })
         }
     }, [JSON.stringify(selectedGame), JSON.stringify(secrets)])
 
@@ -43,7 +42,7 @@ export const AboutMe = () => {
             <div onClick={() => beneficiary.displayName !== "" ? setShowQuestions(!showQuestions) : null}>
                 <div className="avatar_container">
                     {showQuestions
-                        ? <img className="avatar" alt={userState.user.displayName} src={`${userState.user.photoURL}/medium`} />
+                        ? <img className="avatar" alt={state.user.displayName} src={`${state.user.photoURL}/medium`} />
                         : <img className="avatar" alt={beneficiary.displayName} src={`${beneficiary.photoURL}/medium`} />
                     }
                 </div>

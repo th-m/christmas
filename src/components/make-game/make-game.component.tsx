@@ -13,18 +13,18 @@ interface GameInfo {
     notes: string
 }
 export const MakeGame = () => {
-    const { userState, isAuthenticated } = useContext<UserInterface>(User);
+    const { state: { user, isAuthenticated } } = useContext(User);
     const [games, setGames] = useState<GameInfo[]>([]);
     const [selectedGameId, setSelectedGameId] = useState<string>('');
 
     useEffect(() => {
         if (isAuthenticated) {
-            getCreatorsGames(userState.user.uid, (games) => {
+            getCreatorsGames(user.uid, (games) => {
                 setGames(games)
             })
 
         }
-    }, [userState.user.uid])
+    }, [user.uid])
 
     if (!isAuthenticated) {
         return null

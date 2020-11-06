@@ -3,11 +3,11 @@ import { getGame, getGameUser } from "../fire";
 import { UserInterface, User } from "../store/user.store";
 
 export const useGames = (games) => {
-    const { userState } = useContext<UserInterface>(User);
+    const { state } = useContext(User);
     const [gamesArr, setGamesArr] = useState<any[]>([]);
     const [selectedGame, setSelectedGame] = useState<string>('');
     const [gameDetails, setGameDetails] = useState<any>({ gid: '' });
-    const [secrets, setSecrets] = useState()
+    const [secrets, setSecrets] = useState<any>()
     useEffect(() => {
         if (games) {
             setGamesArr(Object.keys(games).map(g => ({ ...games[g], gameKey: g })))
@@ -19,11 +19,11 @@ export const useGames = (games) => {
         if (selectedGame !== '') {
             getGame(selectedGame, (gameData) => {
                 setGameDetails(gameData)
-                if (gameData && gameData.gid && gameData.gid !== '' && userState.user.uid) {
-                    getGameUser(gameData.gid, userState.user.uid, (data) => {
+                if (gameData && gameData.gid && gameData.gid !== '' && state.user.uid) {
+                    getGameUser(gameData.gid, state.user.uid, (data) => {
                         const gid = gameData && gameData.gid ? gameData.gid : null;
                         const name = gameData && gameData.name ? gameData.name : null;
-                        setSecrets({ ...data, uid: userState.user.uid, id: gid, name });
+                        setSecrets({ ...data, uid: state.user.uid, id: gid, name });
                     })
                 }
             })

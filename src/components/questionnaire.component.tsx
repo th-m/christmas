@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import useForm from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { upsertQuestoinnaire, getQuestions } from '../fire';
 import { UserInterface, User } from '../store/user.store';
 const iv = {
@@ -18,7 +18,7 @@ const iv = {
 }
 export const Questionnaire = () => {
     const { register, handleSubmit } = useForm(); // initialise the hook
-    const { userState } = useContext<UserInterface>(User);
+    const { state } = useContext(User);
     const [initialValues, setInitialValues] = useState(iv);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -27,16 +27,16 @@ export const Questionnaire = () => {
         setTimeout(() => { setShowSuccess(false) }, 2000);
     }
     const onSubmit = (formData) => {
-        upsertQuestoinnaire(userState.user.uid, formData, successMessage());
+        upsertQuestoinnaire(state.user.uid, formData, successMessage());
     }
     useEffect(() => {
-        getQuestions(userState.user.uid, (vals) => {
+        getQuestions(state.user.uid, (vals) => {
             if (vals.questionnaire) {
                 setInitialValues({ ...vals.questionnaire })
             }
         });
         // setInitialValues({...vals.questionnaire})
-    }, [userState.user.uid])
+    }, [state.user.uid])
     return (
         <>
             <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>

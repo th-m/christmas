@@ -1,13 +1,13 @@
-import useForm from "react-hook-form";
 import React, { useContext, useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { makeid } from "../../utils";
 import { User, UserInterface } from '../../store/user.store'
 import { getGame, addGame } from "../../fire";
 
 export const AddNewGame = () => {
-    const { userState } = useContext<UserInterface>(User);
+    const { state } = useContext(User);
     const { register, handleSubmit, errors } = useForm(); // initialise the hook
-    const [validKey, setValidKey] = useState();
+    const [validKey, setValidKey] = useState<string>();
     const [gameKey, setGameKey] = useState(makeid(6));
     const [success, setSuccess] = useState(false);
 
@@ -39,7 +39,7 @@ export const AddNewGame = () => {
     }
     return (
         <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
-            <input type="hidden" ref={register} name="creatorId" defaultValue={userState.user.uid} />
+            <input type="hidden" ref={register} name="creatorId" defaultValue={state.user.uid} />
             <input type="hidden" ref={register} name="gameKey" defaultValue={validKey} />
             <div className="question">
                 <label>Name for the group</label>

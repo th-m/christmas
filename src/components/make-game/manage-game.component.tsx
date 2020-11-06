@@ -17,7 +17,7 @@ function shuffle(a) {
     return a;
 }
 export const ManageGame = ({ game }) => {
-    const [copied, setCopied] = useState();
+    const [copied, setCopied] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([])
     const [logicErr, setLogicErr] = useState(false);
 
@@ -108,7 +108,7 @@ export const ManageGame = ({ game }) => {
                 }
             })
             if (tickerCheck) {
-                secretSantas.forEach((currentUser, ) => {
+                secretSantas.forEach((currentUser,) => {
                     if (currentUser) {
                         updateGameUserInfo(game.gid, currentUser, (success) => console.log(success))
                     }

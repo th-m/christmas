@@ -17,7 +17,6 @@ const loadingMessages = [
 export const Loading = () => {
     const [message, setMessage] = useState(loadingMessages[0])
     useEffect(() => {
-
         const interval = setInterval(() => {
             const ms = loadingMessages[
                 Math.floor(Math.random() * loadingMessages.length)
@@ -28,10 +27,12 @@ export const Loading = () => {
             clearInterval(interval)
         }
     }, [])
+    const r = Math.floor(Math.random() * 2) === 0;
+    console.log(r)
     return (
         <div className="loading">
             <img src={loadingGif} alt="santa gif" />
-            <p className={Math.floor(Math.random() * 2) === 0 ? 'red' : 'green'}>{message}</p>
+            <p className={r ? 'red' : 'green'}>{message}</p>
         </div>
     )
 }

@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { getUser, firebase } from '../fire'
-import { User, UserInterface } from "../store/user.store";
+import { User } from "../store/user.store";
 import { updateUserInfo } from "../fire/facebook.auth";
-import {
-    useParams
-} from 'react-router-dom'
+
 const santaLoadingKey = 'santa-nator-loading';
 
 const checkLocalStorageLoading = () => {
@@ -15,7 +13,6 @@ const checkLocalStorageLoading = () => {
     return isLoading === "true" ? true : false;
 }
 export const useAuth = () => {
-    // let { gameId } = useParams()
     const { state, dispatch } = useContext(User);
     const [loading, setLoading] = useState(checkLocalStorageLoading());
 
@@ -38,27 +35,12 @@ export const useAuth = () => {
             console.warn(e);
         }
     }
-    // const login = () => {
-    //     handleLoadingChange(true);
-    //     fbSignUp();
-    // }
+
     useEffect(() => {
         // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
             if (result && state.user.uid === '') {
-                // console.log(gameId);
-                // if (gameId) {
-                //     updateUserInfo({ user: result }, {
-                //         games: {
-                //             [gameId]: {
-                //                 has: "",
-                //                 name: "",
-                //             }
-                //         }
-                //     });
-                // } else {
                 updateUserInfo({ user: result });
-                // }
                 getUser(result.uid, handleUserLogin)
             } else if (!result && state.user) {
                 handleUserLogout()
@@ -66,16 +48,15 @@ export const useAuth = () => {
         });
 
         firebase.auth().getRedirectResult().then(function (result) {
-            // @ts-ignore
-            if (result.user && userState.user.uid === '') {
+            if (result.user && state.user.uid === '') {
                 updateUserInfo(result);
                 getUser(result.user.uid, handleUserLogin);
             }
         }).catch(function (error) {
             console.log(error);
         });
-        // Handle oauth redirect for mobile
-    });
+
+    }, []);
 
     return { logout, loading }
 }
