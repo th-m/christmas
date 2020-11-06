@@ -51,7 +51,7 @@ const InitiateAboutMe = () => {
 }
 
 const AppRouter = () => {
-
+  console.log('hi');
   return (
     <div className="App">
       <Router>
