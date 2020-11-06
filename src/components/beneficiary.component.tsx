@@ -26,7 +26,7 @@ export const Beneficiary = ({ beneficiary }: any) => {
                 <div className="question answer">
                     <label>Favorite  &nbsp;
                         <a href="https://www.amazon.com/gp/product/B0719C5P56/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B0719C5P56&linkCode=as2&tag=thmcodes-20&linkId=69e5bdae9f2be364d09118c7b21fb335" target="_blank">
-                            gift card
+                            place to shop
                             </a></label>
                     <p>  {beneficiary.questionnaire.giftcard || ''} </p>
                 </div>

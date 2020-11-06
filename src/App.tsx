@@ -8,8 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {
   useParams
 } from 'react-router-dom'
-import { updateUserInfo } from './fire/facebook.auth';
-import { addUserToGame } from './fire';
+import { addUserToGame, updateUserInfo } from './fire';
 import { useHistory } from 'react-router-dom'
 
 const InitiateAboutMe = () => {
@@ -18,7 +17,6 @@ const InitiateAboutMe = () => {
   const history = useHistory();
   useEffect(() => {
     if (gameKey && gameKey !== '' && user.uid !== '') {
-      console.log(user);
       if (user.games && user.games[gameKey]) {
         console.log('user has already been added to game');
         history.push('/')
@@ -26,7 +24,7 @@ const InitiateAboutMe = () => {
         console.log('lets add this bish', { gameKey });
         addUserToGame(gameKey, user, (d) => {
           console.log('what did this func say', { d })
-          updateUserInfo(user, {
+          updateUserInfo({ user }, {
             games: {
               [gameKey]: {
                 has: "",

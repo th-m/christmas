@@ -18,11 +18,14 @@ const config = {
   appId: "1:763611236376:web:1295b2a40fc1b28a421b6d"
 }
 
-// firebase.initializeApp(config)
 firebase.initializeApp(config);
-export const realTimedb = firebase.database();
-const db = firebase.firestore();
-db.enablePersistence()
+
+const auth = firebase.auth();
+
+export const storage = firebase.storage();
+const db = firebase.database();
+export const store = firebase.firestore();
+store.enablePersistence()
   .catch(function (err) {
     if (err.code === 'failed-precondition') {
       // Multiple tabs open, persistence can only be enabled
@@ -35,41 +38,32 @@ db.enablePersistence()
     }
   });
 
-const auth = firebase.auth();
-// const provider = new firebase.auth.FacebookAuthProvider();
-
-const storage = firebase.storage();
-
 export type CB = (querySnapshot: Object | any) => any;
-function isFacebookApp() {
-  // @ts-ignore
-  var ua = navigator.userAgent || navigator.vendor || window.opera;
+export function isFacebookApp() {
+  var ua = navigator.userAgent || navigator.vendor;
   return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
 }
 
-if (!isFacebookApp()) {
-  const messaging = firebase.messaging();
-  messaging.usePublicVapidKey("BBO_ykHs1baLCNx8XINwHREnwFva6z7R8TNgGRC2UW9dRlzAapHynvpcvAW3PhpL83jS9miMPomtKd9l9dY_cn8");
-  messaging.requestPermission()
-    .then(() => {
-      console.log('permission granted');
-      return messaging.getToken();
-    }).then(token => {
-      console.log({ token }) // associate this token with user
-    }).catch(() => {
-      console.log('permission denied');
-    })
-}
-
-export { auth, db, firebase, storage };
-
-
 
 export const getUser = (uid: string, cb: CB) => {
-  db.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
+  store.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
+}
+
+export const updateUserInfo = (result: { user: any }, moreData = {}) => {
+  const { uid, displayName, email, phoneNumber, providerData, photoURL, ...rest } = result.user;
+
+  const updateInfo = { uid, displayName, email, phoneNumber, photoURL, lastLogin: (new Date()) };
+
+  store.collection("users").doc(uid).set({ ...updateInfo, ...moreData }, { merge: true })
+    .then(function () {
+      console.log("user upated in db db!");
+    })
+    .catch(function (error) {
+      console.error("Error writing document: ", error);
+    });
 }
 export const getGame = (gameKey: string, cb: CB) => {
-  db.collection('games').where("gameKey", "==", gameKey).get().then(querySnapshot => {
+  store.collection('games').where("gameKey", "==", gameKey).get().then(querySnapshot => {
     const games: any[] = []
     querySnapshot.forEach(function (doc) {
       games.push({ gid: doc.id, ...doc.data() })
@@ -84,14 +78,14 @@ export const getGame = (gameKey: string, cb: CB) => {
 }
 
 export const getGameUser = (gid: string, uid: string, cb: CB) => {
-  db.collection('games').doc(gid).collection('users').doc(uid).get().then(doc => {
+  store.collection('games').doc(gid).collection('users').doc(uid).get().then(doc => {
     const d = doc.data();
     cb(d)
   })
 }
 
 export const getGameUsers = (gid: string, cb: CB) => {
-  db.collection('games').doc(gid).collection('users').onSnapshot(querySnapshot => {
+  store.collection('games').doc(gid).collection('users').onSnapshot(querySnapshot => {
     const users: Object[] = [];
     querySnapshot.forEach(function (doc) {
       users.push({ uid: doc.id, ...doc.data() })
@@ -100,7 +94,7 @@ export const getGameUsers = (gid: string, cb: CB) => {
   });
 }
 export const getCreatorsGames = (uid: string, cb: CB) => {
-  db.collection('games').where("creatorId", "==", uid).onSnapshot(querySnapshot => {
+  store.collection('games').where("creatorId", "==", uid).onSnapshot(querySnapshot => {
     const games: Object[] = [];
     querySnapshot.forEach(function (doc) {
       games.push({ gid: doc.id, ...doc.data() })
@@ -111,7 +105,7 @@ export const getCreatorsGames = (uid: string, cb: CB) => {
 
 export const getQuestions = (uid: string, cb: CB) => {
   if (uid === '' || !uid) { return }
-  return db.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
+  return store.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
 }
 
 interface Questionnaire {
@@ -132,7 +126,7 @@ export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
     console.log(`if (!uid || uid === '' ) `)
     return;
   }
-  db.collection('users').doc(uid).set({ questionnaire: data }, { merge: true })
+  store.collection('users').doc(uid).set({ questionnaire: data }, { merge: true })
     .then(() => {
       cb('success');
     }).catch(error => {
@@ -149,7 +143,7 @@ export const updateGameUserInfo = (gid: string, data, cb) => {
     console.log(`updateGameUserInfo if (!data || !data.uid || data.uid === '' ) `)
     return;
   }
-  db.collection('games').doc(gid).collection('users').doc(data.uid).set({ ...data }, { merge: true })
+  store.collection('games').doc(gid).collection('users').doc(data.uid).set({ ...data }, { merge: true })
     .then(() => {
       cb('success');
     }).catch(error => {
@@ -181,7 +175,7 @@ export const addUserToGame = (gameKey: string, data: UserState, cb) => {
       console.log('woops that game dont exist');
       return;
     }
-    db.collection('games').doc(responseData.gid).collection('users').doc(data.uid).set(updateData, { merge: true })
+    store.collection('games').doc(responseData.gid).collection('users').doc(data.uid).set(updateData, { merge: true })
       .then(() => {
         cb('success');
       }).catch(error => {
@@ -200,13 +194,6 @@ export const addGame = (data, cb) => {
     return;
   }
 
-  db.collection('games').add(data).then(d => { cb(true) }).catch(e => { console.error(e) })
+  store.collection('games').add(data).then(d => { cb(true) }).catch(e => { console.error(e) })
 
 }
-
-
-// function get(path) {
-//   return realTimedb.ref(path).once("value").then(snapshot => {
-//     return snapshot.val();
-//   });
-// }

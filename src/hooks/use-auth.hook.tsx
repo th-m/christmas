@@ -1,7 +1,8 @@
+import firebase from "firebase";
 import { useContext, useEffect, useState } from "react";
-import { getUser, firebase } from '../fire'
+import { getUser } from '../fire'
 import { User } from "../store/user.store";
-import { updateUserInfo } from "../fire/facebook.auth";
+import { updateUserInfo } from "../fire";
 
 const santaLoadingKey = 'santa-nator-loading';
 
@@ -18,43 +19,29 @@ export const useAuth = () => {
 
     const handleUserLogin = (userData) => {
         dispatch({ type: 'login', payload: userData });
-        handleLoadingChange(false);
+        // handleLoadingChange(false);
     }
-    const handleLoadingChange = (b: boolean) => {
-        setLoading(b);
-        localStorage.setItem(santaLoadingKey, b ? 'true' : 'false');
-    }
-    const handleUserLogout = () => {
-        dispatch({ type: 'logout' });
-    }
+
+
     const logout = async () => {
         try {
             await firebase.auth().signOut();
-            handleUserLogout();
+            dispatch({ type: 'logout' });
         } catch (e) {
             console.warn(e);
         }
     }
 
     useEffect(() => {
-        // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
+            console.log('auth change', { result })
             if (result && state.user.uid === '') {
                 updateUserInfo({ user: result });
                 getUser(result.uid, handleUserLogin)
-            } else if (!result && state.user) {
-                handleUserLogout()
             }
         });
 
-        firebase.auth().getRedirectResult().then(function (result) {
-            if (result.user && state.user.uid === '') {
-                updateUserInfo(result);
-                getUser(result.user.uid, handleUserLogin);
-            }
-        }).catch(function (error) {
-            console.log(error);
-        });
+
 
     }, []);
 

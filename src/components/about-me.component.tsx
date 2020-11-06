@@ -4,7 +4,7 @@ import { UserInterface, User } from "../store/user.store";
 import { useGames } from '../hooks/use-games.hook';
 import { Questionnaire } from './questionnaire.component';
 import { getUser } from '../fire';
-import { updateUserInfo } from '../fire/facebook.auth';
+import { updateUserInfo } from '../fire';
 import { Beneficiary } from './beneficiary.component';
 
 const initialBeneficiary = {

@@ -5,22 +5,41 @@ import { User } from '../store/user.store'
 import { useAuth } from '../hooks/use-auth.hook';
 import { useHistory } from 'react-router-dom'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { auth } from '../fire';
+import {
+    useParams
+} from 'react-router-dom'
+import { isFacebookApp } from '../fire';
 
 const uiConfig = {
-    signInFlow: 'popup',
-    signInSuccessUrl: '/',
+    signInFlow: 'redirect',
     signInOptions: [
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     ]
 };
 
+const signInKey = 'signing-in-loading';
 export const NavControls = () => {
     const { state: { user, isAuthenticated } } = useContext(User);
     const { logout, loading } = useAuth();
     const [signIn, setSignIn] = useState(false);
     const history = useHistory();
+    const { gameKey } = useParams();
+
+    const handleSignIn = () => {
+        setSignIn(true)
+        if (isFacebookApp()) {
+            localStorage.setItem(signInKey, signIn ? 'true' : 'false');
+        }
+    }
+
+    useEffect(() => {
+        const isSigningIn = localStorage.getItem(signInKey);
+        if (isSigningIn) {
+            setSignIn(true)
+            localStorage.setItem(signInKey, 'false');
+        }
+    }, [])
     useEffect(() => {
         if (user.uid !== "") {
             setSignIn(false);
@@ -31,7 +50,7 @@ export const NavControls = () => {
             {loading && <Loading />}
             {signIn &&
                 <div className="login-container">
-                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+                    <StyledFirebaseAuth uiConfig={{ ...uiConfig, signInFlow: isFacebookApp() ? 'redirect' : 'popup', signInSuccessUrl: `/${gameKey ?? ''}` }} firebaseAuth={firebase.auth()} />
                 </div>
             }
 
@@ -46,7 +65,7 @@ export const NavControls = () => {
                         </>
                     }
                     <a href="https://www.amazon.com/?tag=thmcodes-20&linkCode=ez" target="_blank"><button>Buy Stuff</button></a>
-                    {user.uid !== '' ? <button onClick={logout}>Sign out</button> : <button onClick={() => setSignIn(true)}>Sign in</button>}
+                    {user.uid !== '' ? <button onClick={logout}>Sign out</button> : <button onClick={handleSignIn}>Sign in</button>}
                 </div>
             </div>
 
