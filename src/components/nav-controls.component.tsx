@@ -14,9 +14,12 @@ const uiConfig = {
     signInFlow: 'redirect',
     signInOptions: [
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     ]
 };
+
+
+const cookie = key => ((new RegExp((key || '=') + '=(.*?); ', 'gm')).exec(document.cookie + '; ') || ['', null])[1]
 
 const signInKey = 'signing-in-loading';
 export const NavControls = () => {
@@ -29,15 +32,19 @@ export const NavControls = () => {
     const handleSignIn = () => {
         setSignIn(true)
         if (isFacebookApp()) {
+            document.cookie = `${signInKey}=true`;
             localStorage.setItem(signInKey, signIn ? 'true' : 'false');
         }
     }
 
     useEffect(() => {
         const isSigningIn = localStorage.getItem(signInKey);
-        if (isSigningIn) {
+        const signInCookie = cookie(signInKey)
+        if (isSigningIn === "true" || signInCookie === "true") {
             setSignIn(true)
+
             localStorage.setItem(signInKey, 'false');
+            document.cookie = `${signInKey}=false`;
         }
     }, [])
     useEffect(() => {
@@ -45,6 +52,7 @@ export const NavControls = () => {
             setSignIn(false);
         }
     }, [user.uid ?? ''])
+    console.log({ gameKey })
     return (
         <>
             {loading && <Loading />}

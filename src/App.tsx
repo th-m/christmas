@@ -15,6 +15,7 @@ const InitiateAboutMe = () => {
   const { state: { user } } = useContext(User);
   const { gameKey } = useParams();
   const history = useHistory();
+
   useEffect(() => {
     if (gameKey && gameKey !== '' && user.uid !== '') {
       if (user.games && user.games[gameKey]) {
@@ -53,7 +54,7 @@ const AppRouter = () => {
   return (
     <div className="App">
       <Router>
-        <Route component={NavControls} />
+        <Route path="/:gameKey" component={NavControls} />
         <Switch>
           <Route path="/create-game" component={MakeGame} />
           <Route path="/:gameKey" component={InitiateAboutMe} />

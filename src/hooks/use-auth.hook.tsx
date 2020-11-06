@@ -19,7 +19,6 @@ export const useAuth = () => {
 
     const handleUserLogin = (userData) => {
         dispatch({ type: 'login', payload: userData });
-        // handleLoadingChange(false);
     }
 
 
@@ -33,6 +32,7 @@ export const useAuth = () => {
     }
 
     useEffect(() => {
+        // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
             console.log('auth change', { result })
             if (result && state.user.uid === '') {
