@@ -33,7 +33,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^3.3.0",
     "@types/react": "^16.9.55",
     "@types/react-dom": "16.9.9",
     "semistandard": "^16.0.0"
