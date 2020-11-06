@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Loading } from "./loading.component";
 import { User } from '../store/user.store'
 import { useAuth } from '../hooks/use-auth.hook';
@@ -22,6 +22,11 @@ export const NavControls = () => {
     const { logout, loading } = useAuth();
     const [signIn, setSignIn] = useState(false);
     const history = useHistory();
+    useEffect(() => {
+        if (user.uid !== "") {
+            setSignIn(false);
+        }
+    }, [user.uid ?? ''])
     return (
         <>
             {loading && <Loading />}
@@ -42,7 +47,7 @@ export const NavControls = () => {
                         </>
                     }
                     <a href="https://www.amazon.com/?tag=thmcodes-20&linkCode=ez" target="_blank"><button>Buy Stuff</button></a>
-                    {user.uid !== '' ? <button onClick={logout}>Sign out</button> : <button onClick={logout}>Sign in</button>}
+                    {user.uid !== '' ? <button onClick={logout}>Sign out</button> : <button onClick={() => setSignIn(true)}>Sign in</button>}
                 </div>
             </div>
 
