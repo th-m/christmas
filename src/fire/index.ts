@@ -1,3 +1,4 @@
+import { UserState } from '../store/user.store';
 import { db, CB, realTimedb } from './constants'
 export { auth, db, firebase, provider, storage } from './constants'
 export { fbSignUp } from './facebook.auth'
@@ -94,8 +95,7 @@ export const updateGameUserInfo = (gid: string, data, cb) => {
     });
 }
 
-export const addUserToGame = (gameKey: string, { user }, cb) => {
-  const data = user;
+export const addUserToGame = (gameKey: string, data: UserState, cb) => {
   if (gameKey === '' || !gameKey) {
     console.log(`if (gameKey === '' || !gameKey)`)
     return;

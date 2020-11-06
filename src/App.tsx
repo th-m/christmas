@@ -13,20 +13,20 @@ import { addUserToGame } from './fire';
 import { useHistory } from 'react-router-dom'
 
 const InitiateAboutMe = () => {
-  const { userState } = useContext<UserInterface>(User);
+  const { state: { user } } = useContext(User);
   const { gameKey } = useParams();
   const history = useHistory();
   useEffect(() => {
-    if (gameKey && gameKey !== '' && userState.user.uid !== '') {
-      console.log(userState.user);
-      if (userState.user.games && userState.user.games[gameKey]) {
+    if (gameKey && gameKey !== '' && user.uid !== '') {
+      console.log(user);
+      if (user.games && user.games[gameKey]) {
         console.log('user has already been added to game');
         history.push('/')
       } else {
         console.log('lets add this bish', { gameKey });
-        addUserToGame(gameKey, userState, (d) => {
+        addUserToGame(gameKey, user, (d) => {
           console.log('what did this func say', { d })
-          updateUserInfo(userState, {
+          updateUserInfo(user, {
             games: {
               [gameKey]: {
                 has: "",
@@ -39,11 +39,11 @@ const InitiateAboutMe = () => {
         });
       }
     }
-  }, [gameKey, userState.user.uid])
+  }, [gameKey, user.uid])
 
   return (
     <>
-      {userState.user.uid !== '' &&
+      {user.uid !== '' &&
         <AboutMe />
       }
     </>
@@ -51,7 +51,7 @@ const InitiateAboutMe = () => {
 }
 
 const AppRouter = () => {
-  console.log('hi');
+
   return (
     <div className="App">
       <Router>

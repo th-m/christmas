@@ -1,59 +1,69 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, Dispatch } from 'react';
 
-// @ts-ignore
-let User = createContext();
-
-interface UserState {
+export interface UserInterface {
+    isAuthenticated: boolean;
+    user: UserState;
+}
+const initialState: UserInterface = {
     user: {
-        uid: string;
-        displayName: string;
-        email: string;
-        providerId: string;
-        photoURL: string;
-        phoneNumber: string;
-        games?: {
-            [key: string]: {
-                has: string;
-                name: string;
-            }
+        uid: "",
+        displayName: "",
+        email: "",
+        providerId: "",
+        photoURL: "",
+        phoneNumber: ""
+    },
+    isAuthenticated: false,
+};
+
+
+export interface UserState {
+    uid: string;
+    displayName: string;
+    email: string;
+    providerId: string;
+    photoURL: string;
+    phoneNumber: string;
+    games?: {
+        [key: string]: {
+            has: string;
+            name: string;
         }
     }
 }
 
-type DispatchActions = 'logout' | 'login';
-
-export interface UserInterface {
-    isAuthenticated: boolean;
-    userState: UserState;
-    dispatchUser: (params: { type: DispatchActions, payload?: any; }) => void;
+interface LOGOUT {
+    type: "logout";
 }
+interface LOGIN {
+    type: "login";
+    payload: UserState
+}
+type Actions = LOGIN | LOGOUT
 
-let initialState: UserState = {
-    user: {
-        uid: '',
-        displayName: '',
-        email: '',
-        providerId: '',
-        photoURL: '',
-        phoneNumber: '',
-    },
-};
+interface ContextInterface {
+    state: UserInterface,
+    dispatch: Dispatch<Actions>;
+}
+const User = createContext<ContextInterface>({
+    state: { ...initialState },
+    dispatch: () => { return }
+});
 
-// @ts-ignore
-let reducer = (state, action) => {
+const reducer = (state: UserInterface, action: Actions) => {
     switch (action.type) {
         case "logout":
-            return initialState;
+            return { ...initialState };
         case "login":
-            return { user: action.payload };
+            return { ...state, user: action.payload, isAuthenticated: action?.payload?.uid !== "" };
+        default:
+            return state;
     }
 };
 
 function UserProvider(props) {
-    // const [foo, setFoo] = useState('foo');
-    let [userState, dispatchUser] = useReducer(reducer, initialState);
-    let isAuthenticated = userState && userState.user.uid !== '';
-    let value = { userState, dispatchUser, isAuthenticated };
+    let [state, dispatch] = useReducer(reducer, initialState);
+    let value = { state, dispatch };
 
 
     return (
