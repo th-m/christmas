@@ -1,12 +1,9 @@
 
 
-import { auth, db, firebase } from '.'
-import { mobilecheck } from '../utils';
+import { db } from '.'
 
-// const provider = new firebase.auth.FacebookAuthProvider();
 
 export const updateUserInfo = (result, moreData = {}) => {
-    // @ts-ignore
     const { uid, displayName, email, phoneNumber, providerData } = result.user;
 
     const updateInfo = { uid, displayName, email, providerId: 'facebook', phoneNumber, lastLogin: (new Date()) };
@@ -22,13 +19,4 @@ export const updateUserInfo = (result, moreData = {}) => {
             console.error("Error writing document: ", error);
         });
 }
-
-// export const fbSignUp = () => {
-//     if (!mobilecheck()) {
-//         auth.signInWithPopup(provider).then(updateUserInfo).catch((error) => console.log({ error }));
-//     } else {
-//         auth.signInWithRedirect(provider)
-//             .then(updateUserInfo).catch((error) => console.log({ error }));
-//     }
-// }
 
