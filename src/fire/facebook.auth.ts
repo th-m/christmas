@@ -3,7 +3,7 @@
 import { auth, db, firebase } from '.'
 import { mobilecheck } from '../utils';
 
-const provider = new firebase.auth.FacebookAuthProvider();
+// const provider = new firebase.auth.FacebookAuthProvider();
 
 export const updateUserInfo = (result, moreData = {}) => {
     // @ts-ignore
@@ -23,13 +23,12 @@ export const updateUserInfo = (result, moreData = {}) => {
         });
 }
 
-export const fbSignUp = () => {
-    if (!mobilecheck()) {
-        auth.signInWithPopup(provider).then(updateUserInfo).catch((error) => console.log({ error }));
-    } else {
-        auth.signInWithRedirect(provider)
-            .then(updateUserInfo).catch((error) => console.log({ error }));
-    }
-}
-
+// export const fbSignUp = () => {
+//     if (!mobilecheck()) {
+//         auth.signInWithPopup(provider).then(updateUserInfo).catch((error) => console.log({ error }));
+//     } else {
+//         auth.signInWithRedirect(provider)
+//             .then(updateUserInfo).catch((error) => console.log({ error }));
+//     }
+// }
 

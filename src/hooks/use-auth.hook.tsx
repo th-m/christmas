@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { getUser, firebase } from '../fire'
 import { User, UserInterface } from "../store/user.store";
-import { updateUserInfo, fbSignUp } from "../fire/facebook.auth";
+import { updateUserInfo } from "../fire/facebook.auth";
 import {
     useParams
 } from 'react-router-dom'
@@ -16,11 +16,11 @@ const checkLocalStorageLoading = () => {
 }
 export const useAuth = () => {
     // let { gameId } = useParams()
-    const { userState, dispatchUser } = useContext<UserInterface>(User);
+    const { state, dispatch } = useContext(User);
     const [loading, setLoading] = useState(checkLocalStorageLoading());
 
     const handleUserLogin = (userData) => {
-        dispatchUser({ type: 'login', payload: userData });
+        dispatch({ type: 'login', payload: userData });
         handleLoadingChange(false);
     }
     const handleLoadingChange = (b: boolean) => {
@@ -28,7 +28,7 @@ export const useAuth = () => {
         localStorage.setItem(santaLoadingKey, b ? 'true' : 'false');
     }
     const handleUserLogout = () => {
-        dispatchUser({ type: 'logout' });
+        dispatch({ type: 'logout' });
     }
     const logout = async () => {
         try {
@@ -38,14 +38,14 @@ export const useAuth = () => {
             console.warn(e);
         }
     }
-    const login = () => {
-        handleLoadingChange(true);
-        fbSignUp();
-    }
+    // const login = () => {
+    //     handleLoadingChange(true);
+    //     fbSignUp();
+    // }
     useEffect(() => {
         // Handle active user
         firebase.auth().onAuthStateChanged(function (result) {
-            if (result && userState.user.uid === '') {
+            if (result && state.user.uid === '') {
                 // console.log(gameId);
                 // if (gameId) {
                 //     updateUserInfo({ user: result }, {
@@ -60,7 +60,7 @@ export const useAuth = () => {
                 updateUserInfo({ user: result });
                 // }
                 getUser(result.uid, handleUserLogin)
-            } else if (!result && userState.user) {
+            } else if (!result && state.user) {
                 handleUserLogout()
             }
         });
@@ -77,5 +77,5 @@ export const useAuth = () => {
         // Handle oauth redirect for mobile
     });
 
-    return { login, logout, loading }
+    return { logout, loading }
 }
