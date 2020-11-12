@@ -14,6 +14,7 @@ const iv = {
     relax: '',
     dislike: '',
     sport: '',
+    clothesizes: '',
     any: ''
 }
 export const Questionnaire = () => {
@@ -41,6 +42,10 @@ export const Questionnaire = () => {
         <>
             <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
                 <div className="question">
+                    <label>Sizes:(Shirt, Pant, Shoe, other??)</label>
+                    <textarea ref={register} name="clothesizes" defaultValue={initialValues.clothesizes} />
+                </div>
+                <div className="question">
                     <label>Favorite color</label>
                     <textarea ref={register} name="color" defaultValue={initialValues.color} />
                 </div>
@@ -53,7 +58,7 @@ export const Questionnaire = () => {
                     <textarea ref={register} name="treat" defaultValue={initialValues.treat} />
                 </div>
                 <div className="question">
-                    <label>Favorite gift card</label>
+                    <label>Favorite place to shop</label>
                     <textarea ref={register} name="giftcard" defaultValue={initialValues.giftcard} />
                 </div>
                 <div className="question">

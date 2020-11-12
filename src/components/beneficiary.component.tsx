@@ -16,6 +16,10 @@ export const Beneficiary = ({ beneficiary }: any) => {
                     <p>  {beneficiary.questionnaire.color || ''} </p>
                 </div>
                 <div className="question answer">
+                    <label>Sizes (shirt, pant, shoes, other??):</label>
+                    <p>  {beneficiary.questionnaire.clothesizes || ''} </p>
+                </div>
+                <div className="question answer">
                     <label>Favorite band or music:</label>
                     <p>  {beneficiary.questionnaire.music || ''} </p>
                 </div>
