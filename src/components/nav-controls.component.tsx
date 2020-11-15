@@ -14,7 +14,7 @@ const uiConfig = {
     signInFlow: 'redirect',
     signInOptions: [
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     ]
 };
 
