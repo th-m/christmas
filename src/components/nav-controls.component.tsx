@@ -11,7 +11,7 @@ import {
 import { isFacebookApp } from '../fire';
 
 const uiConfig = {
-    signInFlow: 'redirect',
+    signInFlow: 'popup',
     signInOptions: [
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
