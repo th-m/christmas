@@ -311,8 +311,11 @@ canvas{
     justify-content: flex-start;
   }
 
-  .select-exclude{
+  /* .select-exclude{
     height: 26px;
+  } */
+ option:checked{
+    color:green;;
   }
   .select-exclude:active, .select-exclude:focus{
     height: inherit;

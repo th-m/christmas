@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { getGameUsers, updateGameUserInfo } from "../../fire";
+import { User,GameUser, getGameUsers, updateGameUserInfo } from "../../fire";
 
-interface User {
-    displayName: string;
-    photoURL: string;
-    uid: string;
-    has?: string;
-    exclude: string[];
-}
+
 function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -18,11 +11,13 @@ function shuffle(a) {
 }
 export const ManageGame = ({ game }) => {
     const [copied, setCopied] = useState<boolean>(false);
-    const [users, setUsers] = useState<User[]>([])
+    const [users, setUsers] = useState<GameUser[]>([])
     const [logicErr, setLogicErr] = useState(false);
 
     const handleCopy = () => {
         setCopied(true)
+        navigator.clipboard.writeText(`https://santa-nator.com/${game.gameKey}`);
+        
         setTimeout(() => {
             setCopied(false);
         }, 2000);
@@ -43,12 +38,14 @@ export const ManageGame = ({ game }) => {
         if (!user) {
             return;
         }
-        if (!user.exclude) {
+        // if (!user?.exclude) {
             user.exclude = []
-        }
+        // }
         let options = e.target.options;
         for (let i = 0, l = options.length; i < l; i++) {
             if (options[i].selected) {
+                console.log(options[i])
+
                 if (user.exclude.includes(options[i].value)) {
                     user.exclude = user.exclude.filter(arrayItem => arrayItem !== options[i].value);
 
@@ -57,12 +54,13 @@ export const ManageGame = ({ game }) => {
                 }
             }
         }
+        
         if (game.gid) {
-            updateGameUserInfo(game.gid, user, (success) => console.log(success))
+            updateGameUserInfo(game.gameKey, user, (success) => console.log(success))
         }
     }
 
-    const usersIds = users.map(user => user.uid)
+    const usersIds = users.map(user => user.id)
     const usersExcludes = Array.from(new Set(users.filter(user => user.exclude).flat()));
 
     const handleAssignments = () => {
@@ -74,15 +72,15 @@ export const ManageGame = ({ game }) => {
                 let currentUser = users.find(u => u.uid === uid);
                 if (currentUser) {
                     currentUser.has = shifted[index];
-                    updateGameUserInfo(game.gid, currentUser, (success) => console.log(success))
+                    updateGameUserInfo(game.gameKey, currentUser, (success) => console.log(success))
                 }
             })
         } else {
             let selectedList: string[] = [];
             const getRandomUid = () => usersIds[Math.floor(Math.random() * usersIds.length)];
-            const invalidSelection = (person, randomUid) => !randomUid || person.exclude.includes(randomUid) || person.uid === randomUid || selectedList.includes(randomUid) ? true : false;
+            const invalidSelection = (person, randomUid) => !randomUid || person?.exclude?.includes(randomUid) || person.id === randomUid || selectedList.includes(randomUid) ? true : false;
             const secretSantas: any[] = [];
-            const usersWithExcludesIds = users.filter(user => user.exclude.filter(x => x !== '').length > 0).map(user => user.uid);
+            const usersWithExcludesIds = users.filter(user => user?.exclude?.filter(x => x !== '').length > 0).map(user => user.id);
             const sortedIds = Array.from(new Set([...usersWithExcludesIds, ...usersIds]));
             let tickerCheck = true;
             sortedIds.forEach(currentId => {
@@ -109,19 +107,23 @@ export const ManageGame = ({ game }) => {
             })
             if (tickerCheck) {
                 secretSantas.forEach((currentUser,) => {
+                    console.log({currentUser});
                     if (currentUser) {
-                        updateGameUserInfo(game.gid, currentUser, (success) => console.log(success))
+                        updateGameUserInfo(game.gameKey, currentUser, (success) => console.log(success))
                     }
                 })
             }
         }
 
     }
+    http://localhost:5173/xw73ac
+    
+ 
     return (
         <>
             {game && !!game.gameKey && !!game.name &&
-                <CopyToClipboard text={`https://santa-nator.com/${game.gameKey}`}
-                    onCopy={handleCopy}>
+                <div 
+                onClick={handleCopy}>
                     <p>
                         {copied
                             ? <><span>copied to clip board</span></>
@@ -132,20 +134,20 @@ export const ManageGame = ({ game }) => {
                             </>
                         }
                     </p>
-                </CopyToClipboard>
+                </div>
             }
             {users.map(user =>
                 <div key={`${user.uid}-user-options`}>
                     <div className="manage-option">
-                        <img className="avatar" alt={user.displayName} src={`${user.photoURL}/small`} />
-                        <span>{user.displayName}</span>
+                        <img className="avatar" alt={user.fullName} src={`${user.imageUrl}`}  style={{width:50, height:50}}/>
+                        <span>{user.fullName}</span>
                     </div>
                     <div>
                         <div>
                             <label>exclude</label>
-                            <select className="select-exclude" multiple value={user.exclude} onChange={handleChange(user)}>
+                            <select className="select-exclude" multiple  defaultValue={user.exclude} onChange={handleChange(user)}>
                                 <option value={''}>-</option>
-                                {users.map(x => <option key={`${x.uid}-manaage-exclucs`} value={x.uid}>{x.displayName} </option>)}
+                                {users.map(x => <option key={`${x.uid}-manaage-exclucs`} value={x.uid}>{x.fullName} </option>)}
                             </select>
                         </div>
                     </div>

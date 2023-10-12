@@ -1,74 +1,69 @@
-import React, { useContext, useEffect, useState } from 'react';
-import './App.css';
-import { AboutMe } from './components/about-me.component';
-import { MakeGame } from './components/make-game/make-game.component';
-import { NavControls } from './components/nav-controls.component';
-import { User, UserInterface, UserProviderHoc } from './store/user.store'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from "react";
+import "./App.css";
+import { AboutMe } from "./components/about-me.component";
+import { MakeGame } from "./components/make-game/make-game.component";
+import { NavControls } from "./components/nav-controls.component";
+
 import {
-  useParams
-} from 'react-router-dom'
-import { addUserToGame, updateUserInfo } from './fire';
-import { useHistory } from 'react-router-dom'
+  BrowserRouter as Router,
+  Route,
+  useNavigate,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { User, addUserToGame, addUser, getUser } from "./fire";
+
+import { ClerkProvider, useUser } from "@clerk/clerk-react";
+
+const clerkPubKey = "pk_test_c3VpdGVkLWZhbGNvbi00Ni5jbGVyay5hY2NvdW50cy5kZXYk";
 
 const InitiateAboutMe = () => {
-  const { state: { user } } = useContext(User);
-  const { gameKey } = useParams();
-  const history = useHistory();
-
+  const { user } = useUser();
+  const { gameKey } = useParams<any>();
+  const navigate = useNavigate();
+  const location = useLocation();
   useEffect(() => {
-    if (gameKey && gameKey !== '' && user.uid !== '') {
-      if (user.games && user.games[gameKey]) {
-        console.log('user has already been added to game');
-        history.push('/')
-      } else {
-        console.log('lets add this bish', { gameKey });
-        addUserToGame(gameKey, user, (d) => {
-          console.log('what did this func say', { d })
-          updateUserInfo({ user }, {
-            games: {
-              [gameKey]: {
-                has: "",
-                name: "",
-              }
-            }
+    if (user?.id) {
+      getUser(user.id, (_user) => {
+        if(!_user){
+           // @ts-ignore
+           addUser(user)
+        }
+        
+        // http://localhost:5173/dh2if5
+        if( gameKey) {
+          addUserToGame(gameKey, _user as unknown as User, (d) => {
+            navigate("/");
           });
-          console.log('added user info to the game');
-          history.push('/');
-        });
-      }
+        }
+      });
     }
-  }, [gameKey, user.uid])
-
-  return (
-    <>
-      {user.uid !== '' &&
-        <AboutMe />
-      }
-    </>
-  );
-}
+  }, [gameKey, user?.id]);
+  if(location.pathname.includes('create-game')){
+    return null;
+  }
+  return <>{!!user?.id && <AboutMe />}</>;
+};
 
 const AppRouter = () => {
-
   return (
-    <div className="App">
-      <Router>
-        <Switch>
-          <Route exact path="/" component={NavControls} />
-          <Route path="/:gameKey" component={NavControls} />
-        </Switch>
-        <Switch>
-          <Route path="/create-game" component={MakeGame} />
-          <Route path="/:gameKey" component={InitiateAboutMe} />
-          <Route component={InitiateAboutMe} />
-        </Switch>
-      </Router>
-    </div>
-  )
-}
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <div className="App">
+      
+        <Router>
+        <NavControls />
+        
+          <Routes>
+            <Route path="/" element={<InitiateAboutMe />} />
+            <Route path="/:gameKey" element={<InitiateAboutMe />} />
+            <Route path="/create-game" element={<MakeGame />} />
+            
+          </Routes>
+        </Router>
+      </div>
+    </ClerkProvider>
+  );
+};
 
-export default UserProviderHoc(AppRouter);
-
-
-
+export default AppRouter;

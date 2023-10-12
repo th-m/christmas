@@ -1,12 +1,17 @@
-import { UserState } from '../store/user.store';
-// export { auth, db, CB, firebase, storage } from './constants'
+import { initializeApp } from "firebase/app";
 
-import firebase from 'firebase';
-import 'firebase/auth';
-import 'firebase/database';
-import 'firebase/firestore';
-import 'firebase/storage';
-import 'firebase/messaging';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  setDoc,
+  getDoc,
+  doc,
+  query,
+  where,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 const config = {
   apiKey: "AIzaSyBiy8ikGtlf8MVWeWkDlZFRHkY5WhDppVU",
@@ -15,98 +20,106 @@ const config = {
   projectId: "christmas-464ee",
   storageBucket: "christmas-464ee.appspot.com",
   messagingSenderId: "763611236376",
-  appId: "1:763611236376:web:1295b2a40fc1b28a421b6d"
-}
+  appId: "1:763611236376:web:1295b2a40fc1b28a421b6d",
+};
 
-firebase.initializeApp(config);
+const app = initializeApp(config);
 
-const auth = firebase.auth();
-
-export const storage = firebase.storage();
-const db = firebase.database();
-export const store = firebase.firestore();
-store.enablePersistence()
-  .catch(function (err) {
-    if (err.code === 'failed-precondition') {
-      // Multiple tabs open, persistence can only be enabled
-      // in one tab at a a time.
-      // ...
-    } else if (err.code === 'unimplemented') {
-      // The current browser does not support all of the
-      // features required to enable persistence
-      // ...
-    }
-  });
+export const store = getFirestore(app);
 
 export type CB = (querySnapshot: Object | any) => any;
-export function isFacebookApp() {
-  var ua = navigator.userAgent || navigator.vendor;
-  return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
+
+const gamesCol = collection(store, "games");
+export const getUser = async (uid: string, cb: CB) => {
+  const userDoc = doc(store, `users/${uid}`);
+  const usersSnapshot = await getDoc(userDoc);
+  cb(usersSnapshot.data());
+};
+export interface GameUser {
+  fullName: string;
+  exclude: string[];
+  has: string;
+  id: string;
+  name: string;
+  imageUrl: string;
+  uid: string;
+  gameKey: string;
 }
-
-
-export const getUser = (uid: string, cb: CB) => {
-  store.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
+export interface User {
+  id: string;
+  fullName: string;
+  emailAddresses: string;
+  userName: string;
+  phone: string;
+  imageUrl: string;
+  games: [GameUser];
+  questionnaire: any;
 }
+export const getCleanedUserObject = (user: any) => {
+  const { fullName, emailAddresses, id, imageUrl, userName } = user;
+  return JSON.parse(
+    JSON.stringify({ fullName, emailAddresses, id, imageUrl, userName })
+  );
+};
+export const updateUserInfo = (user: any) => {
+  const userDoc = doc(store, `users/${user.id}`);
 
-export const updateUserInfo = (result: { user: any }, moreData = {}) => {
-  const { uid, displayName, email, phoneNumber, providerData, photoURL, ...rest } = result.user;
-
-  const updateInfo = { uid, displayName, email, phoneNumber, photoURL, lastLogin: (new Date()) };
-
-  store.collection("users").doc(uid).set({ ...updateInfo, ...moreData }, { merge: true })
+  // const _data = { ...getCleanedUserObject(user), ...moreData };
+  // console.log({user,moreData,_data})
+  updateDoc(userDoc, user)
     .then(function () {
-      console.log("user upated in db db!");
+      console.log("user upated in db!", { user });
     })
     .catch(function (error) {
       console.error("Error writing document: ", error);
     });
-}
-export const getGame = (gameKey: string, cb: CB) => {
-  store.collection('games').where("gameKey", "==", gameKey).get().then(querySnapshot => {
-    const games: any[] = []
-    querySnapshot.forEach(function (doc) {
-      games.push({ gid: doc.id, ...doc.data() })
-    })
-    if (games.length < 1) {
-      console.log('no game with that key', { gameKey });
-      cb(null)
-    } else {
-      cb(games[0])
-    }
-  });
-}
+};
 
-export const getGameUser = (gid: string, uid: string, cb: CB) => {
-  store.collection('games').doc(gid).collection('users').doc(uid).get().then(doc => {
-    const d = doc.data();
-    cb(d)
-  })
-}
-
-export const getGameUsers = (gid: string, cb: CB) => {
-  store.collection('games').doc(gid).collection('users').onSnapshot(querySnapshot => {
-    const users: Object[] = [];
-    querySnapshot.forEach(function (doc) {
-      users.push({ uid: doc.id, ...doc.data() })
+export const addUser = (user: User, moreData = {}) => {
+  // const usersCol = collection(store, `users`);
+  const userDoc = doc(store, `users/${user.id}`);
+  const data = { ...getCleanedUserObject(user), ...moreData };
+  setDoc(userDoc, { ...getCleanedUserObject(user), ...moreData })
+    .then(function () {
+      console.log("added user in db db!");
     })
-    cb(users)
-  });
-}
-export const getCreatorsGames = (uid: string, cb: CB) => {
-  store.collection('games').where("creatorId", "==", uid).onSnapshot(querySnapshot => {
-    const games: Object[] = [];
-    querySnapshot.forEach(function (doc) {
-      games.push({ gid: doc.id, ...doc.data() })
-    })
-    cb(games)
-  });
-}
+    .catch(function (error) {
+      console.error("Error writing document: ", error);
+    });
+};
+export const getGame = async (gameKey: string, cb: CB) => {
+  const q = query(gamesCol, where("gameKey", "==", gameKey));
+  const snapshot = await getDocs(q);
+  const gamesList = snapshot.docs.map((doc) => ({
+    gid: doc.id,
+    ...doc.data(),
+  }));
+  console.log({gameKey,gamesList})
+  cb(gamesList[0]);
+  return gamesList[0];
+};
 
-export const getQuestions = (uid: string, cb: CB) => {
-  if (uid === '' || !uid) { return }
-  return store.collection('users').doc(uid).get().then(querySnapshot => cb({ ...querySnapshot.data() }));
-}
+export const getGameUser = async (gid: string, uid: string, cb: CB) => {
+  const userDoc = doc(store, `games/${gid}/users/${uid}`);
+  const snapshot = await getDoc(userDoc);
+  cb(snapshot.data());
+};
+
+export const getGameUsers = async (gid: string, cb: CB) => {
+  const usersCol = collection(store, `games/${gid}/users`);
+  const snapshot = await getDocs(usersCol);
+  const users = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
+  cb(users);
+};
+export const getCreatorsGames = async (uid: string, cb: CB) => {
+  const q = query(gamesCol, where("creatorId", "==", uid));
+  const snapshot = await getDocs(q);
+  const gamesList = snapshot.docs.map((doc) => ({
+    gid: doc.id,
+    ...doc.data(),
+  }));
+  cb(gamesList);
+};
 
 interface Questionnaire {
   author: string;
@@ -122,78 +135,118 @@ interface Questionnaire {
 }
 
 export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
-  if (!uid || uid === '') {
-    console.log(`if (!uid || uid === '' ) `)
+  if (!uid || uid === "") {
+    console.log(`if (!uid || uid === '' ) `);
     return;
   }
-  store.collection('users').doc(uid).set({ questionnaire: data }, { merge: true })
-    .then(() => {
-      cb('success');
-    }).catch(error => {
-      console.error("Error upsertQuestoinnaire: ", error);
-    });
-}
+  const userDoc = doc(store, `users/${uid}`);
 
-export const updateGameUserInfo = (gid: string, data, cb) => {
-  if (!gid || gid === '') {
-    console.log(`updateGameUserInfo if (!uid || uid === '' ) `)
-    return;
-  }
-  if (!data || !data.uid || data.uid === '') {
-    console.log(`updateGameUserInfo if (!data || !data.uid || data.uid === '' ) `)
-    return;
-  }
-  store.collection('games').doc(gid).collection('users').doc(data.uid).set({ ...data }, { merge: true })
-    .then(() => {
-      cb('success');
-    }).catch(error => {
-      console.error("Error upsertQuestoinnaire: ", error);
+  setDoc(userDoc, { questionnaire: data }, { merge: true })
+    .then(function () {
+      console.log("user questionnair in db db!");
+    })
+    .catch(function (error) {
+      console.error("Error writing document: ", error);
     });
-}
+};
 
-export const addUserToGame = (gameKey: string, data: UserState, cb) => {
-  if (gameKey === '' || !gameKey) {
-    console.log(`if (gameKey === '' || !gameKey)`)
+// TODO CHECK THIS OUT
+export const updateGameUserInfo = (gameKey: string, user: GameUser, cb) => {
+  if (!gameKey || gameKey === "") {
+    console.log(`updateGameUserInfo if (!uid || uid === '' ) `);
     return;
   }
-  if (!data || !data.uid || data.uid === '') {
-    console.log(`if (!data || !data.uid || data.uid === '')`)
+  if (!user || !user.id || user.id === "") {
+    console.log(
+      `updateGameUserInfo if (!data || !data.uid || data.uid === '' ) `
+    );
     return;
   }
-  console.log('gameKey', gameKey);
+  console.log({user})
+  getGame(gameKey, ({gid})=>{
+
+  
+  const userDoc = doc(store, `games/${gid}/users/${user.id}`);
+
+  setDoc(userDoc, { ...user }, { merge: true })
+    .then(function () {
+      console.log("udpate game users!");
+    })
+    .catch(function (error) {
+      console.error("Error writing document: ", error);
+    });
+  
+    getUser(user.id, (_user) => {
+      const games = _user.games;
+      const hasGame = games.findIndex((g) => g.gameKey === gameKey);
+      if (hasGame === -1) {
+        //@ts-ignore
+        // games.push({user});
+
+      }else{
+        delete _user.games
+        games[hasGame] = {...games[hasGame],...user}
+      }
+      // console.log({_user, games});
+      updateUserInfo({..._user,games})
+    
+    })
+  })
+};
+
+export const addUserToGame = (gameKey: string, user: User, cb) => {
+  if (gameKey === "" || !gameKey) {
+    console.log(`if (gameKey === '' || !gameKey)`);
+    return;
+  }
+  if (!user || !user.id || user.id === "") {
+    console.log(`if (!data || !data.uid || data.uid === '')`);
+    return;
+  }
+
+
   getGame(gameKey, (responseData) => {
     console.log(responseData);
-    const updateData = {
-      displayName: data.displayName,
-      photoURL: data.photoURL,
-      uid: data.uid,
-      exclude: [],
-      has: "",
-      name: "",
-    }
+
+   
     if (!responseData || !responseData.gid) {
-      console.log('woops that game dont exist');
+      console.log("woops that game dont exist");
       return;
     }
-    store.collection('games').doc(responseData.gid).collection('users').doc(data.uid).set(updateData, { merge: true })
-      .then(() => {
-        cb('success');
-      }).catch(error => {
-        console.error("Error upsertQuestoinnaire: ", error);
+    console.log("lets update", user);
+    const games = user?.games ?? [];
+    const hasGame = games.findIndex((g) => g.gameKey === gameKey);
+    if (hasGame === -1) {
+      //@ts-ignore
+      games.push({ gameKey, ...responseData });
+      console.log({ games });
+      updateUserInfo({ ...user, games });
+    }
+    // https://santa-nator.com/030w64
+    const userDoc = doc(store, `games/${responseData.gid}/users/${user.id}`);
+
+    setDoc(userDoc, { ...getCleanedUserObject(user) }, { merge: true })
+      .then(function () {
+        console.log("user questionnair in db db!");
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
       });
-  })
-}
 
-export const addGame = (data, cb) => {
-  if (!data || !data.creatorId || data.creatorId === '') {
-    console.error('(!data || !data.creatorId || data.creatorId === ')
+    cb();
+  });
+};
+
+export const addGame = async (data, cb) => {
+  if (!data || !data.creatorId || data.creatorId === "") {
+    console.error("(!data || !data.creatorId || data.creatorId === ");
     return;
   }
-  if (!data.gameKey || data.gameKey === '') {
-    console.error('(!data.gameKey || data.gameKey === ')
+  if (!data.gameKey || data.gameKey === "") {
+    console.error("(!data.gameKey || data.gameKey === ");
     return;
   }
-
-  store.collection('games').add(data).then(d => { cb(true) }).catch(e => { console.error(e) })
-
-}
+  const resp = await addDoc(gamesCol, data);
+  cb({ gid: resp.id, ...data });
+  // store.collection('games').add(data).then(d => { cb(true) }).catch(e => { console.error(e) })
+};

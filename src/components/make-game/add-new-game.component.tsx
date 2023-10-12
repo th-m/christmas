@@ -1,62 +1,60 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { makeid } from "../../utils";
-import { User, UserInterface } from '../../store/user.store'
-import { getGame, addGame } from "../../fire";
+import {
+  getGame,
+  addGame,
+  getCreatorsGames,
+  addUserToGame,
+  User,
+} from "../../fire";
+import { useUser } from "@clerk/clerk-react";
 
-export const AddNewGame = () => {
-    const { state } = useContext(User);
-    const { register, handleSubmit, errors } = useForm(); // initialise the hook
-    const [validKey, setValidKey] = useState<string>();
-    const [gameKey, setGameKey] = useState(makeid(6));
-    const [success, setSuccess] = useState(false);
-
-
-    const generateKey = () => {
-        setGameKey(makeid(6))
-    }
-
-    useEffect(() => {
-        getGame(gameKey, (game) => {
-            if (!game) {
-                console.log('found valid key');
-                setValidKey(gameKey)
-            } else {
-                generateKey();
-            }
-        })
-
-    }, [gameKey])
-
-    const onSubmit = (gameDetails) => {
-        console.log(gameDetails);
-        addGame(gameDetails, () => {
-            setSuccess(true)
-            setTimeout(() => {
-                setSuccess(false);
-            }, 2000)
-        })
-    }
-    return (
-        <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
-            <input type="hidden" ref={register} name="creatorId" defaultValue={state.user.uid} />
-            <input type="hidden" ref={register} name="gameKey" defaultValue={validKey} />
-            <div className="question">
-                <label>Name for the group</label>
-                <textarea ref={register({ required: 'Required' })} name="name" />
-                {errors.name && <span>"wow buddy you gotta name the group"</span>}
-            </div>
-            <div className="question">
-                <label>Budget</label>
-                <textarea ref={register} name="budget" />
-            </div>
-            <div className="question">
-                <label>Anything else?</label>
-                <textarea ref={register} name="notes" />
-            </div>
-            <div>
-                <button type="submit">{success ? `success` : `save`} </button>
-            </div>
-        </form>
-    )
+interface Props {
+  setGames: any;
+  games:any[]
 }
+export const AddNewGame = ({ setGames,games }: Props) => {
+  const { user } = useUser();
+  const { register, handleSubmit } = useForm(); // initialise the hook
+
+  const [success, setSuccess] = useState(false);
+
+  const onSubmit = (gameDetails) => {
+    const gameKey = makeid(6);
+    const creatorId = user?.id;
+    if (creatorId) {
+      addGame({ ...gameDetails, gameKey, creatorId }, (game) => {
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 2000);
+       
+        setGames([...games, game])
+        addUserToGame(gameKey, user as unknown as User, () => {
+          console.log("added to game");
+        });
+      });
+    }
+  };
+  // https://santa-nator.com/dh2if5
+  return (
+    <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
+      <div className="question">
+        <label>Name for the group</label>
+        <textarea {...register("name")} required />
+      </div>
+      <div className="question">
+        <label>Budget</label>
+        <textarea {...register("budget")} />
+      </div>
+      <div className="question">
+        <label>Anything else?</label>
+        <textarea {...register("notes")} />
+      </div>
+      <div>
+        <button type="submit">{success ? `success` : `save`} </button>
+      </div>
+    </form>
+  );
+};

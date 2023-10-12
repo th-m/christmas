@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
-import { User, UserInterface } from '../../store/user.store'
 import { getCreatorsGames } from '../../fire';
 import { AddNewGame } from './add-new-game.component';
 import { ManageGame } from './manage-game.component';
+import { useUser } from "@clerk/clerk-react";
 
 interface GameInfo {
     gid: string,
@@ -13,20 +13,28 @@ interface GameInfo {
     notes: string
 }
 export const MakeGame = () => {
-    const { state: { user, isAuthenticated } } = useContext(User);
+    // const { state: { user, isAuthenticated } } = useContext(User);
+    const {user} = useUser()
     const [games, setGames] = useState<GameInfo[]>([]);
     const [selectedGameId, setSelectedGameId] = useState<string>('');
 
+    useEffect(()=>{
+        const game = games[games.length - 1];
+        if(game?.gid){
+            setSelectedGameId(game.gid)
+        }
+    },[games.length])
+
     useEffect(() => {
-        if (isAuthenticated) {
-            getCreatorsGames(user.uid, (games) => {
+        if (user?.id) {
+            getCreatorsGames(user.id, (games) => {
                 setGames(games)
             })
 
         }
-    }, [user.uid])
+    }, [user?.id, games.length])
 
-    if (!isAuthenticated) {
+    if (!user?.id) {
         return null
     }
 
@@ -37,7 +45,7 @@ export const MakeGame = () => {
                 {games.map(game => <option key={game.gid} value={game.gid}>{game.name}</option>)}
             </select>
 
-            {(selectedGameId === '' || selectedGameId === 'newGame') && <AddNewGame />}
+            {(selectedGameId === '' || selectedGameId === 'newGame') && <AddNewGame setGames={setGames} games={games} />}
             {(selectedGameId !== '' && selectedGameId !== 'newGame' && selectedGameId) && <ManageGame game={games.find(game => game.gid == selectedGameId)} />}
         </>
 
