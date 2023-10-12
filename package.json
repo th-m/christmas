@@ -4,7 +4,7 @@
   "private": true,
   "Author": "Thom Valadez",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "dependencies": {
     "@clerk/clerk-react": "^4.26.4",
