@@ -1,0 +1,27 @@
+{
+  "short_name": "React App",
+  "prefer_related_applications": false,
+  "name": "santa-nator",
+  "icons": [
+    {
+      "src": "santa.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "santa.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "santa.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "gcm_sender_id": "103953800507"
+}
