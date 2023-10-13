@@ -23,6 +23,9 @@ const InitiateAboutMe = () => {
   const { gameKey } = useParams<any>();
   const navigate = useNavigate();
   const location = useLocation();
+  if(!user?.id && gameKey){
+    localStorage.setItem('gameKey', gameKey);
+  }
   useEffect(() => {
     if (user?.id) {
       getUser(user.id, (_user) => {
@@ -32,11 +35,12 @@ const InitiateAboutMe = () => {
         }
         
         // http://localhost:5173/dh2if5
-        if( gameKey) {
+        if(gameKey) {
           addUserToGame(gameKey, _user as unknown as User, (d) => {
-            navigate("/");
+            // navigate("/");
           });
         }
+        // if(_user.games.)
       });
     }
   }, [gameKey, user?.id]);
@@ -45,6 +49,7 @@ const InitiateAboutMe = () => {
   }
   return <>{!!user?.id && <AboutMe />}</>;
 };
+
 
 const AppRouter = () => {
   return (
