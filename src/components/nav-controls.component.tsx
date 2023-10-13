@@ -33,14 +33,33 @@ function SignInButton() {
     </button>
   );
 }
+function isInEmbeddedBrowser() {
+  // Get the user agent string.
+  const userAgent = navigator.userAgent;
 
+  // Check if the user agent string contains any of the following strings, which are commonly used by embedded browsers:
+  const embeddedBrowserStrings = [
+    "UCBrowser",
+    "WeChat",
+    "QQBrowser",
+    "SogouBrowser",
+    "AlipayBrowser",
+    "BaiduBrowser",
+    "FBAN",
+    "FBAV",
+
+  ];
+  console.log("check browser")
+  // Return true if the user agent string contains any of the embedded browser strings.
+  return embeddedBrowserStrings.some(string => userAgent.includes(string));
+}
 export const NavControls = () => {
   const user = useUser();
   // const history = useHistory();
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (window?.top?.location !== window.location) {
+  if (isInEmbeddedBrowser()) {
     // The page is in an iframe.
     return (
       <div
@@ -59,7 +78,7 @@ export const NavControls = () => {
         <button
           className="sign-up-btn"
           style={{ width: 200, height: 120, margin: "auto" }}
-          onClick={() => (window.location.href = window.location.href)}
+          onClick={() => window.open(window.location.href)}
         >
           Open App
         </button>
