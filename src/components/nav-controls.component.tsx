@@ -11,7 +11,7 @@ function SignUpButton() {
   const clerk = useClerk();
   const location = useLocation()
   return (
-    <button className="sign-up-btn" onClick={() => clerk.openSignUp({"redirectUrl":`${location.pathname}`})}>
+    <button className="sign-up-btn" style={{width:200, height:120, margin:'auto'}} onClick={() => clerk.openSignUp({"redirectUrl":`${location.pathname}`})}>
       Sign up
     </button>
   );
@@ -36,15 +36,17 @@ export const NavControls = () => {
   return (
     <>
       <SignedOut>
-        <ul>
-          <li>
+        {/* <ul>
+          <li> */}
+          <div style={{width:'100vw', height:'100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
             <SignUpButton />
-          </li>
+          </div>
+          {/* </li>
 
-          <li>
-            <SignInButton />
-          </li>
-        </ul>
+          <li> */}
+            {/* <SignInButton /> */}
+          {/* </li> */}
+        {/* </ul> */}
       </SignedOut>
 
       <SignedIn>
