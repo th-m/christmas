@@ -12,7 +12,6 @@ export const useGames = () => {
         if(user?.id){
 
             getUser(user.id, (_user => {
-                console.log(_user.games)
                 if (_user.games) {
                     
                     setGamesArr(Object.keys(_user.games))

@@ -1,10 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { makeid } from "../../utils";
 import {
-  getGame,
   addGame,
-  getCreatorsGames,
   addUserToGame,
   User,
 } from "../../fire";
@@ -16,11 +13,15 @@ interface Props {
 }
 export const AddNewGame = ({ setGames,games }: Props) => {
   const { user } = useUser();
-  const { register, handleSubmit } = useForm(); // initialise the hook
 
   const [success, setSuccess] = useState(false);
 
-  const onSubmit = (gameDetails) => {
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    const myFormData = new FormData(e.currentTarget);
+    console.log(myFormData);
+    const gameDetails = {};
+    myFormData.forEach((value, key) => (gameDetails[key] = value));
+
     const gameKey = makeid(6);
     const creatorId = user?.id;
     if (creatorId) {
@@ -39,18 +40,18 @@ export const AddNewGame = ({ setGames,games }: Props) => {
   };
   // https://santa-nator.com/dh2if5
   return (
-    <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
+    <form className="questionnaire" onSubmit={handleSubmit}>
       <div className="question">
         <label>Name for the group</label>
-        <textarea {...register("name")} required />
+        <textarea id={"name"} name={"name"}></textarea>
       </div>
       <div className="question">
         <label>Budget</label>
-        <textarea {...register("budget")} />
+        <textarea id={"budget"} name={"budget"}></textarea>
       </div>
       <div className="question">
         <label>Anything else?</label>
-        <textarea {...register("notes")} />
+        <textarea id={"notes"} name={"notes"}></textarea>
       </div>
       <div>
         <button type="submit">{success ? `success` : `save`} </button>

@@ -68,7 +68,7 @@ export const AboutMe = () => {
                 <select onChange={handleChange}>
                     {
                         // @ts-ignore }
-                    }{games.map(game => <option key={game.gameKey} value={game.gameKey}>{game.name}</option>)}
+                    }{games.map((game,i) => <option key={`${i}-${game.gameKey}`} value={game.gameKey}>{game.name}</option>)}
                 </select>
             }
             {showQuestions

@@ -12,6 +12,7 @@ import {
   addDoc,
   updateDoc,
 } from "firebase/firestore";
+import { Questionnaire } from "../components/questionnaire.component";
 
 const config = {
   apiKey: "AIzaSyBiy8ikGtlf8MVWeWkDlZFRHkY5WhDppVU",
@@ -121,18 +122,7 @@ export const getCreatorsGames = async (uid: string, cb: CB) => {
   cb(gamesList);
 };
 
-interface Questionnaire {
-  author: string;
-  color: string;
-  dislike: string;
-  giftcard: string;
-  id: string;
-  music: string;
-  perfectday: string;
-  relax: string;
-  treat: string;
-  worstday: string;
-}
+
 
 export const upsertQuestoinnaire = (uid: string, data: Questionnaire, cb) => {
   if (!uid || uid === "") {

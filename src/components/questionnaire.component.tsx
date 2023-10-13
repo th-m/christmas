@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { upsertQuestoinnaire, getUser } from "../fire";
 import { useUser } from "@clerk/clerk-react";
 const iv = {
@@ -17,21 +16,75 @@ const iv = {
   clothesizes: "",
   any: "",
 };
+export interface Questionnaire {
+  author: string;
+  color: string;
+  dislike: string;
+  giftcard: string;
+  id: string;
+  music: string;
+  perfectday: string;
+  relax: string;
+  treat: string;
+  worstday: string;
+}
+const qs = [
+  { name: "color", label: "Favorite color" },
+  { name: "music", label: "Favorite band or music" },
+  { name: "treat", label: "Favorite treat/snack/flavor" },
+  { name: "giftcard", label: "Favorite place to shop" },
+  { name: "author", label: "Favorite book or author" },
+  { name: "perfectday", label: "What does your perfect day look like?" },
+  { name: "worstday", label: "What does your worst day look like?" },
+  { name: "relax", label: "How do you relax?" },
+  { name: "dislike", label: "What do you dislike" },
+  { name: "sport", label: "Sportsboall team" },
+  { name: "clothesizes", label: "Sizes:(Shirt, Pant, Shoe, other??)" },
+  { name: "any", label: "Anything else?" },
+];
+
+const Q = ({
+  name,
+  df,
+  label,
+}: {
+  name: string;
+  df: string;
+  label: string;
+}) => {
+  return (
+    <div className="question">
+      <label htmlFor={name}>{label}</label>
+      <textarea id={name} name={name} defaultValue={df}></textarea>
+    </div>
+  );
+};
 export const Questionnaire = () => {
-  const { register, handleSubmit } = useForm(); // initialise the hook
   const { user } = useUser();
   const [initialValues, setInitialValues] = useState(iv);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const successMessage = () => () => {
+  const successMessage =  () => {
     setShowSuccess(true);
+    if (user?.id) {
+      getUser(user?.id, (vals) => {
+        if (vals.questionnaire) {
+          setInitialValues({ ...vals.questionnaire });
+        }
+      });
+    }
     setTimeout(() => {
       setShowSuccess(false);
     }, 2000);
   };
-  const onSubmit = (formData) => {
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const myFormData = new FormData(e.currentTarget);
+    const formDataObj = {} as unknown as Questionnaire;
+    myFormData.forEach((value, key) => (formDataObj[key] = value));
+
     if (user?.id) {
-      upsertQuestoinnaire(user.id, formData, successMessage());
+      upsertQuestoinnaire(user.id, formDataObj, successMessage());
     }
   };
   useEffect(() => {
@@ -43,95 +96,10 @@ export const Questionnaire = () => {
       });
     }
   }, [user?.id]);
-  console.log({user})
   return (
     <>
-      <form className="questionnaire" onSubmit={handleSubmit(onSubmit)}>
-        <div className="question">
-          <label>Sizes:(Shirt, Pant, Shoe, other??)</label>
-          <textarea
-            
-            {...register('clothesizes')}
-            defaultValue={initialValues.clothesizes}
-          />
-        </div>
-        <div className="question">
-          <label>Favorite color</label>
-          <textarea
-            {...register("color")}
-            defaultValue={initialValues.color}
-          />
-        </div>
-        <div className="question">
-          <label>Favorite band or music</label>
-          <textarea
-            {...register("music")}
-            defaultValue={initialValues.music}
-          />
-        </div>
-        <div className="question">
-          <label>Favorite treat/snack/flavor</label>
-          <textarea
-            {...register("treat")}
-            defaultValue={initialValues.treat}
-          />
-        </div>
-        <div className="question">
-          <label>Favorite place to shop</label>
-          <textarea
-            {...register("giftcard")}
-            defaultValue={initialValues.giftcard}
-          />
-        </div>
-        <div className="question">
-          <label>Favorite book or author</label>
-          <textarea
-            {...register("author")}
-            defaultValue={initialValues.author}
-          />
-        </div>
-        <div className="question">
-          <label>What does your perfect day look like?</label>
-          <textarea
-            {...register("perfectday")}
-            defaultValue={initialValues.perfectday}
-          />
-        </div>
-        <div className="question">
-          <label>What does your worst day look like?</label>
-          <textarea
-            {...register("worstday")}
-            defaultValue={initialValues.worstday}
-          />
-        </div>
-        <div className="question">
-          <label>How do you relax?</label>
-          <textarea
-            {...register("relax")}
-            defaultValue={initialValues.relax}
-          />
-        </div>
-        <div className="question">
-          <label>What do you dislike?</label>
-          <textarea
-            {...register("dislike")}
-            defaultValue={initialValues.dislike}
-          />
-        </div>
-        <div className="question">
-          <label>Sport ball game team?</label>
-          <textarea
-            {...register("sport")}
-            defaultValue={initialValues.sport}
-          />
-        </div>
-        <div className="question">
-          <label>Anything else?</label>
-          <textarea
-            {...register("any")}
-            defaultValue={initialValues.any}
-          />
-        </div>
+      <form className="questionnaire" onSubmit={handleSubmit}>
+        {qs.map((q,i) => <Q key={`q-${i}-${q.name}`} {...q} df={initialValues[q.name]} />)}
         <div>
           <button type="submit">{showSuccess ? `success` : `save`} </button>
         </div>
