@@ -23,9 +23,7 @@ const InitiateAboutMe = () => {
   const { gameKey } = useParams<any>();
   const navigate = useNavigate();
   const location = useLocation();
-  if(!user?.id && gameKey){
-    localStorage.setItem('gameKey', gameKey);
-  }
+ 
   useEffect(() => {
     if (user?.id) {
       getUser(user.id, (_user) => {
@@ -33,13 +31,23 @@ const InitiateAboutMe = () => {
            // @ts-ignore
            addUser(user)
         }
-        
+        console.log(_user.games);
         // http://localhost:5173/dh2if5
         if(gameKey) {
+          localStorage.setItem('gameKey', gameKey);
           addUserToGame(gameKey, _user as unknown as User, (d) => {
-            // navigate("/");
+            navigate("/");
           });
         }
+
+        const storageGameKey = localStorage.getItem("gameKey");
+        if(storageGameKey) {
+          addUserToGame(storageGameKey, _user as unknown as User, (d) => {
+            localStorage.removeItem("gameKey");
+            navigate("/");
+          });
+        }
+
         // if(_user.games.)
       });
     }
