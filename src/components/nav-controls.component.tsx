@@ -5,6 +5,7 @@ import {
   useClerk,
   useUser,
 } from "@clerk/clerk-react";
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 
 function SignUpButton() {
@@ -49,16 +50,25 @@ function isInEmbeddedBrowser() {
     "FBAV",
 
   ];
-  console.log("check browser")
+
   // Return true if the user agent string contains any of the embedded browser strings.
   return embeddedBrowserStrings.some(string => userAgent.includes(string));
 }
 export const NavControls = () => {
   const user = useUser();
   // const history = useHistory();
+  const [copied, setCopied] = useState<boolean>(false);
   const location = useLocation();
   const navigate = useNavigate();
-
+  
+  const handleCopy = () => {
+    setCopied(true)
+    navigator.clipboard.writeText(window.location.href);
+    
+    setTimeout(() => {
+        setCopied(false);
+    }, 2000);
+}
   if (isInEmbeddedBrowser()) {
     // The page is in an iframe.
     return (
@@ -67,20 +77,24 @@ export const NavControls = () => {
           width: "100vw",
           height: "100vh",
           display: "flex",
+          flexDirection:'column',
           alignItems: "center",
           justifyContent: "center",
         }}
       >
         <p>
-          This site is being viewed in an embedded browser. Would you like to
-          open it in your default browser?
+          This site is being viewed in an embedded browser. 
         </p>
+        <p>
+          Click the button to copy the url, then open in a new browser.
+        </p>
+
         <button
           className="sign-up-btn"
           style={{ width: 200, height: 120, margin: "auto" }}
-          onClick={() => window.open(window.location.href)}
+          onClick={handleCopy}
         >
-          Open App
+          {copied?"Copied ":window.location.href}
         </button>
       </div>
     );
