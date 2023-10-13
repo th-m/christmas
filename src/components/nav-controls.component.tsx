@@ -42,27 +42,29 @@ export const NavControls = () => {
 
   if (window?.top?.location !== window.location) {
     // The page is in an iframe.
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <p>
-        This site is being viewed in an embedded browser. Would you like to open
-        it in your default browser?
-      </p>
-      <button
-        className="sign-up-btn"
-        style={{ width: 200, height: 120, margin: "auto" }}
-        onClick={() => (window.location.href = window.location.href)}
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        Open App
-      </button>
-    </div>;
+        <p>
+          This site is being viewed in an embedded browser. Would you like to
+          open it in your default browser?
+        </p>
+        <button
+          className="sign-up-btn"
+          style={{ width: 200, height: 120, margin: "auto" }}
+          onClick={() => (window.location.href = window.location.href)}
+        >
+          Open App
+        </button>
+      </div>
+    );
   }
 
   return (
