@@ -25,42 +25,32 @@ const InitiateAboutMe = () => {
   const location = useLocation();
 
   useEffect(() => {
+    if (gameKey) {
+      localStorage.setItem("gameKey", gameKey);
+      navigate("/");
+    }
     if (user?.id) {
       getUser(user.id, (_user) => {
         if (!_user) {
           // @ts-ignore
           addUser(user);
         }
-        
-        if (gameKey) {
+
+        const storageGameKey = localStorage.getItem("gameKey");
+        if (storageGameKey) {
           const inGame = _user?.games?.findIndex((g) => g.gameKey === gameKey);
           if (inGame !== undefined && inGame >= 0) {
             localStorage.removeItem("gameKey");
           } else {
-            addUserToGame(gameKey, _user as unknown as User, (d) => {
-              localStorage.removeItem("gameKey");
+            addUserToGame(storageGameKey, _user as unknown as User, (d) => {
               navigate("/");
             });
           }
         }
-
-        const storageGameKey = localStorage.getItem("gameKey");
-        if (storageGameKey) {
-          addUserToGame(storageGameKey, _user as unknown as User, (d) => {
-            localStorage.removeItem("gameKey");
-            navigate("/");
-          });
-        }
-
       });
-    } else {
-      if (gameKey) {
-        localStorage.setItem("gameKey", gameKey);
-        navigate("/");
-       
-      }
     }
   }, [gameKey, user?.id]);
+  
   if (location.pathname.includes("create-game")) {
     return null;
   }
