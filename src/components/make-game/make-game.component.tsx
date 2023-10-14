@@ -41,7 +41,7 @@ export const MakeGame = () => {
     return (
         <>
             <select value={selectedGameId} onChange={(event) => setSelectedGameId(event.target.value)}>
-                <option value="newGame"> new game</option>
+                <option value="newGame"> New Group</option>
                 {games.map(game => <option key={game.gid} value={game.gid}>{game.name}</option>)}
             </select>
 

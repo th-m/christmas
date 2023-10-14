@@ -138,7 +138,7 @@ export const NavControls = () => {
                       navigate("/");
                     }}
                   >
-                    active games
+                    Active Groups
                   </button>
                 ) : (
                   <button
@@ -146,7 +146,7 @@ export const NavControls = () => {
                       navigate("/create-game");
                     }}
                   >
-                    organize games
+                    Organize Group
                   </button>
                 )}
               </>
