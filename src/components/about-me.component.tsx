@@ -19,7 +19,7 @@ export const AboutMe = () => {
     const [showQuestions, setShowQuestions] = useState(true);
     const [beneficiary, setBeneficiary] = useState<any>(initialBeneficiary);
     const { games, selectedGame, setSelectedGame, secrets } = useGames()
- 
+    
     useEffect(() => {
         if (selectedGame && secrets && secrets.has && user && user.id) {
             if(user?.id){
@@ -31,7 +31,7 @@ export const AboutMe = () => {
                     }else[
                         games[i] = {...games[i],...secrets}
                     ]
-                    updateUserInfo({..._user, games: { [selectedGame.gameKey]: secrets } })
+                    // updateUserInfo({..._user, games: { [selectedGame.gameKey]: secrets } })
                 })
             }
         }

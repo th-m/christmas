@@ -13,16 +13,18 @@ export const useGames = () => {
 
             getUser(user.id, (_user => {
                 if (_user.games) {
-                    
+                    console.log(_user.games)
                     setGamesArr(Object.keys(_user.games))
-                    setSelectedGame(Object.keys(_user.games)[0])
+                    setSelectedGame(_user.games[0].gameKey)
                 }
             })
             )
         }
     }, [user?.id])
 
+    
     useEffect(() => {
+        
         if (selectedGame !== '') {
             getGame(selectedGame, (gameData) => {
                 setGameDetails(gameData)

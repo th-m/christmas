@@ -65,8 +65,10 @@ export const getCleanedUserObject = (user: any) => {
 export const updateUserInfo = (user: any) => {
   const userDoc = doc(store, `users/${user.id}`);
 
-  // const _data = { ...getCleanedUserObject(user), ...moreData };
-  // console.log({user,moreData,_data})
+  if(user && user.games && !Array.isArray(user.games)){
+    console.trace("what happened here")
+    delete user.games;
+  }
   updateDoc(userDoc, user)
     .then(function () {
       console.log("user upated in db!", { user });
@@ -196,20 +198,19 @@ export const addUserToGame = (gameKey: string, user: User, cb) => {
 
 
   getGame(gameKey, (responseData) => {
-    console.log(responseData);
+    
 
    
     if (!responseData || !responseData.gid) {
       console.log("woops that game dont exist");
       return;
     }
-    console.log("lets update", user);
+    
     const games = user?.games ?? [];
-    const hasGame = games.findIndex((g) => g.gameKey === gameKey);
-    if (hasGame === -1) {
+    const hasGame = games?.findIndex((g) => g.gameKey === gameKey);
+    if (hasGame === -1 || hasGame === undefined) {
       //@ts-ignore
       games.push({ gameKey, ...responseData });
-      console.log({ games });
       updateUserInfo({ ...user, games });
     }
     // https://santa-nator.com/030w64

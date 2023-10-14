@@ -31,7 +31,6 @@ const InitiateAboutMe = () => {
            // @ts-ignore
            addUser(user)
         }
-        console.log(_user.games);
         // http://localhost:5173/dh2if5
         if(gameKey) {
           localStorage.setItem('gameKey', gameKey);
