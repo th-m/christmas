@@ -125,8 +125,8 @@ export const NavControls = () => {
       </SignedOut>
 
       <SignedIn>
-        <div className="amazon-banner">
-          <div>
+        <div className="amazon-banner" style={{padding:'1rem'}}>
+          <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', maxWidth:600, margin:'auto'}}>
             {String(user.user?.id) !== "" && (
               <>
                 {location.pathname === "/create-game" ? (
