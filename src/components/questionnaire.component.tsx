@@ -29,17 +29,30 @@ export interface Questionnaire {
   worstday: string;
 }
 const qs = [
+  { name: "address", label: "Mailing Address in case shipping." },
+  
+  { name: "clothesizes", label: "Sizes:(Shirt, Pant, Shoe, other?)" },
+
+  { name: "relax", label: "How do you relax" },
+  
+  { name: "hobbies", label: "List some hobbies and interests" },
+  { name: "media", label: "Which do you prefer, books, movies, music, games?" },
+  { name: "collections", label: "Do you collect anything?" },
   { name: "color", label: "Favorite color" },
-  { name: "music", label: "Favorite band or music" },
+
+  
+  { name: "food", label: "Favorite food or restaurant" },
   { name: "treat", label: "Favorite treat/snack/flavor" },
   { name: "giftcard", label: "Favorite place to shop" },
-  { name: "author", label: "Favorite book or author" },
+  { name: "help", label: "Is there anything you need help with?" },
+  { name: "dislike", label: "What do you dislike" },
+
+  { name: "sport", label: "Favorite sport and team?" },
+  { name: "favorite", label: "Who is your favorite authors, musicians, or artists?"},
+  
   { name: "perfectday", label: "What does your perfect day look like?" },
   { name: "worstday", label: "What does your worst day look like?" },
-  { name: "relax", label: "How do you relax?" },
-  { name: "dislike", label: "What do you dislike" },
-  { name: "sport", label: "Sportsboall team" },
-  { name: "clothesizes", label: "Sizes:(Shirt, Pant, Shoe, other??)" },
+  
   { name: "any", label: "Anything else?" },
 ];
 
