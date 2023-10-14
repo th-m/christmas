@@ -1,24 +1,21 @@
 import React, { useContext, useState, useEffect } from "react";
 import { makeid } from "../../utils";
-import {
-  addGame,
-  addUserToGame,
-  User,
-} from "../../fire";
+import { addGame, addUserToGame, User } from "../../fire";
 import { useUser } from "@clerk/clerk-react";
 
 interface Props {
   setGames: any;
-  games:any[]
+  games: any[];
 }
-export const AddNewGame = ({ setGames,games }: Props) => {
+export const AddNewGame = ({ setGames, games }: Props) => {
   const { user } = useUser();
 
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const myFormData = new FormData(e.currentTarget);
-    console.log(myFormData);
+
     const gameDetails = {};
     myFormData.forEach((value, key) => (gameDetails[key] = value));
 
@@ -30,8 +27,8 @@ export const AddNewGame = ({ setGames,games }: Props) => {
         setTimeout(() => {
           setSuccess(false);
         }, 2000);
-       
-        setGames([...games, game])
+
+        setGames([...games, game]);
         addUserToGame(gameKey, user as unknown as User, () => {
           console.log("added to game");
         });

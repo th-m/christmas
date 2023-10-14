@@ -126,7 +126,7 @@ export const NavControls = () => {
 
       <SignedIn>
         <div className="amazon-banner" style={{padding:'1rem'}}>
-          <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', maxWidth:600, margin:'auto'}}>
+          <div style={{display:'flex', flexDirection:'row', justifyContent:'center', maxWidth:600, margin:'auto'}}>
             {String(user.user?.id) !== "" && (
               <>
                 {location.pathname === "/create-game" ? (
@@ -148,12 +148,12 @@ export const NavControls = () => {
                 )}
               </>
             )}
-            <a
+            {/* <a
               href="https://www.amazon.com/?tag=thmcodes-20&linkCode=ez"
               target="_blank"
             >
               <button>Buy Stuff</button>
-            </a>
+            </a> */}
             {/* <UserButton afterSignOutUrl="/" /> */}
           </div>
         </div>
