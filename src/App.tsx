@@ -23,54 +23,61 @@ const InitiateAboutMe = () => {
   const { gameKey } = useParams<any>();
   const navigate = useNavigate();
   const location = useLocation();
- 
+
   useEffect(() => {
     if (user?.id) {
       getUser(user.id, (_user) => {
-        if(!_user){
-           // @ts-ignore
-           addUser(user)
+        if (!_user) {
+          // @ts-ignore
+          addUser(user);
         }
-        // http://localhost:5173/dh2if5
-        if(gameKey) {
-          localStorage.setItem('gameKey', gameKey);
-          addUserToGame(gameKey, _user as unknown as User, (d) => {
-            navigate("/");
-          });
+        
+        if (gameKey) {
+          const inGame = _user?.games?.findIndex((g) => g.gameKey === gameKey);
+          if (inGame !== undefined && inGame >= 0) {
+            localStorage.removeItem("gameKey");
+          } else {
+            addUserToGame(gameKey, _user as unknown as User, (d) => {
+              localStorage.removeItem("gameKey");
+              navigate("/");
+            });
+          }
         }
 
         const storageGameKey = localStorage.getItem("gameKey");
-        if(storageGameKey) {
+        if (storageGameKey) {
           addUserToGame(storageGameKey, _user as unknown as User, (d) => {
             localStorage.removeItem("gameKey");
             navigate("/");
           });
         }
 
-        // if(_user.games.)
       });
+    } else {
+      if (gameKey) {
+        localStorage.setItem("gameKey", gameKey);
+        navigate("/");
+       
+      }
     }
   }, [gameKey, user?.id]);
-  if(location.pathname.includes('create-game')){
+  if (location.pathname.includes("create-game")) {
     return null;
   }
   return <>{!!user?.id && <AboutMe />}</>;
 };
 
-
 const AppRouter = () => {
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
       <div className="App">
-      
         <Router>
-        <NavControls />
-        
+          <NavControls />
+
           <Routes>
             <Route path="/" element={<InitiateAboutMe />} />
             <Route path="/:gameKey" element={<InitiateAboutMe />} />
             <Route path="/create-game" element={<MakeGame />} />
-            
           </Routes>
         </Router>
       </div>

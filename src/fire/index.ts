@@ -6,6 +6,7 @@ import {
   getDocs,
   setDoc,
   getDoc,
+  deleteDoc,
   doc,
   query,
   where,
@@ -227,6 +228,22 @@ export const addUserToGame = (gameKey: string, user: User, cb) => {
     cb();
   });
 };
+
+export const removeUserFromGame = async (gameKey: string, user: User, cb) => {
+  if (gameKey === "" || !gameKey) {
+    console.log(`if (gameKey === '' || !gameKey)`);
+    return;
+  }
+  if (!user || !user.id || user.id === "") {
+    console.log(`if (!data || !data.uid || data.uid === '')`);
+    return;
+  }
+  getGame(gameKey, async (game) => {
+    const gameUserDoc = doc(store, `games/${game.gid}/users/${user.id}`);
+    await deleteDoc(gameUserDoc)
+    cb()
+  })
+}
 
 export const addGame = async (data, cb) => {
   if (!data || !data.creatorId || data.creatorId === "") {

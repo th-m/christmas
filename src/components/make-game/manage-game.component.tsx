@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { User, GameUser, getGameUsers, updateGameUserInfo } from "../../fire";
+import {
+  User,
+  GameUser,
+  getGameUsers,
+  updateGameUserInfo,
+  removeUserFromGame,
+} from "../../fire";
 
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
@@ -10,7 +16,8 @@ function shuffle(a) {
 }
 export const ManageGame = ({ game }) => {
   const [copied, setCopied] = useState<boolean>(false);
-  const [showExcludes, setShowExcludes] = useState<string[]>([])
+  const [showExcludes, setShowExcludes] = useState<string[]>([]);
+  const [showRemove, setShowRemove] = useState<string[]>([]);
   const [users, setUsers] = useState<GameUser[]>([]);
   const [logicErr, setLogicErr] = useState(false);
 
@@ -43,7 +50,7 @@ export const ManageGame = ({ game }) => {
     }
     let value = e.currentTarget.value;
     const isSelected = user.exclude.includes(value);
-  
+
     if (isSelected) {
       user.exclude = user.exclude.filter((arrayItem) => arrayItem !== value);
     } else {
@@ -130,18 +137,40 @@ export const ManageGame = ({ game }) => {
         });
       }
     }
+    getGameUsers(game.gid, (users) => {
+        setUsers(users);
+      });
   };
   //localhost:5173/xw73ac
   const handleShowExclude = (id) => () => {
     let temp = [...showExcludes];
-    if(temp.includes(id)){
-        temp = temp.filter(item => item !== id)
-    }else{
-        temp.push(id)
+    if (temp.includes(id)) {
+      temp = temp.filter((item) => item !== id);
+    } else {
+      temp.push(id);
     }
-    setShowExcludes(temp)
-  }
-  http: return (
+    setShowExcludes(temp);
+  };
+  const handleShowRemove = (id) => () => {
+    let temp = [...showRemove];
+    if (temp.includes(id)) {
+      temp = temp.filter((item) => item !== id);
+    } else {
+      temp.push(id);
+    }
+    setShowRemove(temp);
+  };
+  const handleRemove = (user) => () => {
+    if (!game.gameKey) {
+      return;
+    }
+    removeUserFromGame(game.gameKey, user, () => {
+      getGameUsers(game.gid, (users) => {
+        setUsers(users);
+      });
+    });
+  };
+  return (
     <>
       {game && !!game.gameKey && !!game.name && (
         <div onClick={handleCopy}>
@@ -162,7 +191,15 @@ export const ManageGame = ({ game }) => {
       )}
       {users.map((user) => (
         <div key={`${user.id}-user-options`}>
-          <div className="manage-option" style={{display:'flex', flexDirection:'row', justifyContent:'space-between', margin:'1rem auto'}}>
+          <div
+            className="manage-option"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              margin: "1rem auto",
+            }}
+          >
             <img
               className="avatar"
               alt={user.fullName}
@@ -171,38 +208,57 @@ export const ManageGame = ({ game }) => {
             />
             <span>{user.fullName}</span>
             <label>has</label>
-              <h6>{user?.has?.slice(5,13) ?? '__'}</h6>
-              <button onClick={handleShowExclude(user.id)} >{showExcludes.includes(user.id) ?"hide excludes":"show exclude"} </button>
+            <h6>{user?.has?.slice(5, 13) ?? "__"}</h6>
+            <button
+              onClick={handleShowExclude(user.id)}
+              style={{
+                backgroundColor: showExcludes.includes(user.id)
+                  ? "grey"
+                  : "white",
+              }}
+            >
+              {"un-match"}{" "}
+            </button>
+            <button
+              onClick={handleShowRemove(user.id)}
+              style={{
+                backgroundColor: showRemove.includes(user.id)
+                  ? "grey"
+                  : "white",
+              }}
+            >
+              {"remove"}{" "}
+            </button>
           </div>
-          {/* <div>
-            <div>
-              <label>has</label>
-              <h6>{user.has}</h6>
-            </div>
-          </div> */}
-            <div style={{marginBottom:'1rem'}}>
-             
-              {showExcludes.includes(user.id) && 
+
+          <div style={{ marginBottom: "1rem" }}>
+            {showRemove.includes(user.id) && (
               <>
-              {users.map((x) => (
+                <button onClick={handleRemove(user)}>
+                  Remove {user.fullName} from the group?
+                </button>
+              </>
+            )}
+            {showExcludes.includes(user.id) && (
+              <>
+                {users.map((x) => (
                   <div key={`${user.id}-${x.id}`}>
-                  <input
-                  id={`${user.id}-${x.id}`}
-                  type="checkbox"
-                  onChange={handleChange(user)}
-                  value={x.id}
-                  disabled={x.id === user.id}
-                  checked={
-                      (user?.exclude ?? []).includes(x.id) || x.id === user.id
-                    }
+                    <input
+                      id={`${user.id}-${x.id}`}
+                      type="checkbox"
+                      onChange={handleChange(user)}
+                      value={x.id}
+                      disabled={x.id === user.id}
+                      checked={
+                        (user?.exclude ?? []).includes(x.id) || x.id === user.id
+                      }
                     />{" "}
                     <label htmlFor={`${user.id}-${x.id}`}>{x.fullName}</label>{" "}
-                    </div>
-                    ))}
-                    </>
-                }
-            </div>
-        
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
         </div>
       ))}
       {logicErr && (

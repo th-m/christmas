@@ -1,6 +1,7 @@
 import {
   SignedIn,
   SignedOut,
+  SignOutButton,
   UserButton,
   useClerk,
   useUser,
@@ -127,6 +128,8 @@ export const NavControls = () => {
       <SignedIn>
         <div className="amazon-banner" style={{padding:'1rem'}}>
           <div style={{display:'flex', flexDirection:'row', justifyContent:'center', maxWidth:600, margin:'auto'}}>
+
+            {/* <SignOutButton /> */}
             {String(user.user?.id) !== "" && (
               <>
                 {location.pathname === "/create-game" ? (
@@ -148,13 +151,13 @@ export const NavControls = () => {
                 )}
               </>
             )}
-            {/* <a
-              href="https://www.amazon.com/?tag=thmcodes-20&linkCode=ez"
-              target="_blank"
-            >
-              <button>Buy Stuff</button>
-            </a> */}
-            {/* <UserButton afterSignOutUrl="/" /> */}
+          
+            <span
+            style={{font:'unset', fontWeight:'unset'}}
+             >
+
+              <UserButton afterSignOutUrl="/" />
+            </span>
           </div>
         </div>
       </SignedIn>
