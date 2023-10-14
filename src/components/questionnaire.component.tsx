@@ -28,7 +28,7 @@ export interface Questionnaire {
   treat: string;
   worstday: string;
 }
-const qs = [
+export const qs = [
   { name: "address", label: "Mailing Address in case shipping." },
   
   { name: "clothesizes", label: "Sizes:(Shirt, Pant, Shoe, other?)" },
@@ -54,7 +54,7 @@ const qs = [
   { name: "worstday", label: "What does your worst day look like?" },
   
   { name: "any", label: "Anything else?" },
-];
+] as const;
 
 const Q = ({
   name,

@@ -1,69 +1,34 @@
-import React from 'react';
+import React from "react";
+import { qs } from "./questionnaire.component";
+
+interface AP {
+  name: string;
+  value: any;
+}
+const A = ({ name, value }: AP) => {
+  const q = qs.find((q) => q.name === name);
+  if (!q || !value) {
+    return null;
+  }
+  return (
+    <div className="question answer">
+      <label>{q.label}</label>
+      <p> {value} </p>
+    </div>
+  );
+};
 
 export const Beneficiary = ({ beneficiary }: any) => {
-    console.log(beneficiary);
-    if (!beneficiary || !beneficiary.questionnaire) {
-        return null
-    }
+  const qs = beneficiary?.questionnaire ?? {};
 
-    return (
-        <>
-
-            <h4>You have {beneficiary.displayName}</h4>
-            <div className="questionnaire">
-                <div className="question answer">
-                    <label>Favorite color:</label>
-                    <p>  {beneficiary.questionnaire.color || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Sizes (shirt, pant, shoes, other??):</label>
-                    <p>  {beneficiary.questionnaire.clothesizes || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Favorite band or music:</label>
-                    <p>  {beneficiary.questionnaire.music || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Favorite treat/snack/flavor:</label>
-                    <p>  {beneficiary.questionnaire.treat || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Favorite  &nbsp;
-                        <a href="https://www.amazon.com/gp/product/B0719C5P56/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B0719C5P56&linkCode=as2&tag=thmcodes-20&linkId=69e5bdae9f2be364d09118c7b21fb335" target="_blank">
-                            place to shop
-                            </a></label>
-                    <p>  {beneficiary.questionnaire.giftcard || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Favorite book or author:</label>
-                    <p>  {beneficiary.questionnaire.author || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>What does your perfect day look like?:</label>
-                    <p>  {beneficiary.questionnaire.perfectday || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>What does your worst day look like?:</label>
-                    <p>  {beneficiary.questionnaire.worstday || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>How do you relax?:</label>
-                    <p>  {beneficiary.questionnaire.relax || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>What do you dislike?:</label>
-                    <p>  {beneficiary.questionnaire.dislike || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Sport ball game team?:</label>
-                    <p>  {beneficiary.questionnaire.sport || ''} </p>
-                </div>
-                <div className="question answer">
-                    <label>Anything else?:</label>
-                    <p>  {beneficiary.questionnaire.any || ''} </p>
-                </div>
-
-            </div>
-        </>
-    )
-}
+  return (
+    <>
+      <h4>You have {beneficiary.fullName}</h4>
+      <div className="questionnaire">
+        {Object.entries(qs).map(([k, v], i) => {
+          return <A key={``} name={k} value={v} />;
+        })}
+      </div>
+    </>
+  );
+};
