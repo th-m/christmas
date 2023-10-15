@@ -27,8 +27,8 @@ const InitiateAboutMe = () => {
   useEffect(() => {
     if (gameKey) {
       localStorage.setItem("gameKey", gameKey);
-      navigate("/");
     }
+    
     if (user?.id) {
       getUser(user.id, (_user) => {
         if (!_user) {
@@ -41,16 +41,17 @@ const InitiateAboutMe = () => {
           const inGame = _user?.games?.findIndex((g) => g.gameKey === gameKey);
           if (inGame !== undefined && inGame >= 0) {
             localStorage.removeItem("gameKey");
+            navigate("/");
           } else {
             addUserToGame(storageGameKey, _user as unknown as User, (d) => {
-              navigate("/");
+              console.log("added")
             });
           }
         }
       });
     }
   }, [gameKey, user?.id]);
-  
+
   if (location.pathname.includes("create-game")) {
     return null;
   }

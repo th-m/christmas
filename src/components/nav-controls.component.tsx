@@ -49,11 +49,10 @@ function isInEmbeddedBrowser() {
     "BaiduBrowser",
     "FBAN",
     "FBAV",
-
   ];
 
   // Return true if the user agent string contains any of the embedded browser strings.
-  return embeddedBrowserStrings.some(string => userAgent.includes(string));
+  return embeddedBrowserStrings.some((string) => userAgent.includes(string));
 }
 export const NavControls = () => {
   const user = useUser();
@@ -61,15 +60,16 @@ export const NavControls = () => {
   const [copied, setCopied] = useState<boolean>(false);
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const handleCopy = () => {
-    setCopied(true)
-    navigator.clipboard.writeText(window.location.href);
-    
-    setTimeout(() => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+
+      setTimeout(() => {
         setCopied(false);
-    }, 2000);
-}
+      }, 2000);
+    });
+  };
   if (isInEmbeddedBrowser()) {
     // The page is in an iframe.
     return (
@@ -78,24 +78,20 @@ export const NavControls = () => {
           width: "100vw",
           height: "100vh",
           display: "flex",
-          flexDirection:'column',
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <p>
-          This site is being viewed in an embedded browser. 
-        </p>
-        <p>
-          Click the button to copy the url, then open in a new browser.
-        </p>
+        <p>This site is being viewed in an embedded browser.</p>
+        <p>Click the button to copy the url, then open in a new browser.</p>
 
         <button
           className="sign-up-btn"
           style={{ width: 200, height: 120, margin: "auto" }}
           onClick={handleCopy}
         >
-          {copied?"Copied ":window.location.href}
+          {copied ? "Copied " : window.location.href}
         </button>
       </div>
     );
@@ -126,9 +122,16 @@ export const NavControls = () => {
       </SignedOut>
 
       <SignedIn>
-        <div className="amazon-banner" style={{padding:'1rem'}}>
-          <div style={{display:'flex', flexDirection:'row', justifyContent:'center', maxWidth:600, margin:'auto'}}>
-
+        <div className="amazon-banner" style={{ padding: "1rem" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              maxWidth: 600,
+              margin: "auto",
+            }}
+          >
             {/* <SignOutButton /> */}
             {String(user.user?.id) !== "" && (
               <>
@@ -151,11 +154,8 @@ export const NavControls = () => {
                 )}
               </>
             )}
-          
-            <span
-            style={{font:'unset', fontWeight:'unset'}}
-             >
 
+            <span style={{ font: "unset", fontWeight: "unset" }}>
               <UserButton afterSignOutUrl="/" />
             </span>
           </div>
